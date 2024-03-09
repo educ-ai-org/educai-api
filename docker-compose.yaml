@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  mongodb:
+    image: mongo:4.4.6
+    container_name: educai
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
