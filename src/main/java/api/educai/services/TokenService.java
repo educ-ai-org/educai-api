@@ -35,7 +35,8 @@ public class TokenService {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(refreshSecretKey)).build();
         DecodedJWT decodedJWT = verifier.verify(token);
 
-        ObjectId userId = new ObjectId("65ebe524b9311813ce27c769");
+
+        ObjectId userId = new ObjectId(decodedJWT.getClaims().get("id").asString());
 
         return userId;
     }

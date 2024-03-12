@@ -2,6 +2,7 @@ package api.educai.controllers;
 
 import api.educai.dto.AuthDTO;
 import api.educai.dto.LoginDTO;
+import api.educai.dto.TokenDTO;
 import api.educai.entities.User;
 import api.educai.services.TokenService;
 import api.educai.services.UserService;
@@ -42,7 +43,7 @@ public class UserController {
     }
 
     @PostMapping("/refreshToken")
-    public ResponseEntity<String> refreshToken(@CookieValue(name = "refreshToken") @NotBlank String refreshToken) {
+    public ResponseEntity<TokenDTO> refreshToken(@CookieValue(name = "refreshToken") @NotBlank String refreshToken) {
         return ResponseEntity.status(200).body(userService.renewUserToken(refreshToken));
     }
 }

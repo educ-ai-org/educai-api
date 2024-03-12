@@ -2,6 +2,7 @@ package api.educai.services;
 
 import api.educai.dto.AuthDTO;
 import api.educai.dto.LoginDTO;
+import api.educai.dto.TokenDTO;
 import api.educai.entities.User;
 import api.educai.repositories.UserRespository;
 import org.bson.types.ObjectId;
@@ -35,7 +36,7 @@ public class UserService {
         return new AuthDTO(TokenService.getToken(user), TokenService.getRefreshToken(user));
     }
 
-    public String renewUserToken(String refreshToken) {
+    public TokenDTO renewUserToken(String refreshToken) {
         ObjectId userId = TokenService.getUserIdByToken(refreshToken);
         User user = userRespository.findById(userId);
 
@@ -43,7 +44,7 @@ public class UserService {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Invalid Token");
         }
 
-        return TokenService.getToken(user);
+        return new TokenDTO(TokenService.getToken(user));
     }
 
     private boolean emailAlreadyExists(String email) {
