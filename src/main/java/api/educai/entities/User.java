@@ -54,6 +54,15 @@ public class User {
     public ObjectId getId() {
         return id;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void encryptPassword() {
         password = passwordEncoder.encode(password);
     }
