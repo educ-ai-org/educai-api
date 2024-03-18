@@ -5,6 +5,8 @@ import api.educai.dto.LoginDTO;
 import api.educai.dto.TokenDTO;
 import api.educai.entities.User;
 import api.educai.repositories.UserRespository;
+import api.educai.utils.token.RefreshToken;
+import api.educai.utils.token.Token;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
@@ -15,6 +17,8 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserService {
     @Autowired
     private UserRespository userRespository;
+    private Token token = new Token();
+    private RefreshToken refreshToken = new RefreshToken();
 
     public User createUser(User user) {
         if(emailAlreadyExists(user.getEmail())) {
@@ -33,18 +37,18 @@ public class UserService {
             throw new ResponseStatusException(HttpStatusCode.valueOf(401), "E-mail or password are invalid!");
         }
 
-        return new AuthDTO(TokenService.getToken(user), TokenService.getRefreshToken(user));
+        return new AuthDTO(token.getToken(user), refreshToken.getToken(user));
     }
 
-    public TokenDTO renewUserToken(String refreshToken) {
-        ObjectId userId = TokenService.getUserIdByToken(refreshToken);
+    public TokenDTO renewUserToken(String userRefreshToken) {
+        ObjectId userId = refreshToken.getUserIdByToken(userRefreshToken);
         User user = userRespository.findById(userId);
 
         if(user == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Invalid Token");
         }
 
-        return new TokenDTO(TokenService.getToken(user));
+        return new TokenDTO(token.getToken(user));
     }
 
     private boolean emailAlreadyExists(String email) {
