@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 public class UserService {
     @Autowired
@@ -28,6 +30,14 @@ public class UserService {
         user.encryptPassword();
 
         return userRespository.save(user);
+    }
+
+    public List<User> getUsers() {
+        List<User> users = userRespository.findAll();
+        if (users.isEmpty()) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(204), "No users found!");
+        }
+        return users;
     }
 
     public AuthDTO autUser(LoginDTO loginDTO) {
