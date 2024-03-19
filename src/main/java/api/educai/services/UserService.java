@@ -61,17 +61,11 @@ public class UserService {
     }
 
     public User updateUserData(ObjectId id, PatchUserEmailAndName patchUserEmailAndName) {
-        User user = userRespository.findById(id);
+        validateUserId(id);
 
-        if(!user.getEmail().equals(patchUserEmailAndName.getEmail())) {
-            emailAlreadyExists(patchUserEmailAndName.getEmail());
-        } else {
-            user.setEmail(patchUserEmailAndName.getEmail());
-        }
+        userRespository.updateEmailAndName(id, patchUserEmailAndName.getName(), patchUserEmailAndName.getEmail());
 
-        user.setName(patchUserEmailAndName.getName());
-
-        return user;
+        return userRespository.findById(id);
     }
 
     private boolean emailAlreadyExists(String email) {
@@ -81,6 +75,22 @@ public class UserService {
     public boolean userIdExists(String id) {
         ObjectId userId = new ObjectId(id);
 
-        return !userRespository.existsById(userId);
+        return userRespository.existsById(userId);
+    }
+
+    public boolean userIdExists(ObjectId id) {
+        return userRespository.existsById(id);
+    }
+
+    public void validateUserId(String id) {
+        if(!userIdExists(id)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "User not found");
+        }
+    }
+
+    public void validateUserId(ObjectId id) {
+        if(!userIdExists(id)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "User not found");
+        }
     }
 }

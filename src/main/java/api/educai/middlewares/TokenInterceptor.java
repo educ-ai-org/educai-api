@@ -1,50 +1,43 @@
 package api.educai.middlewares;
 
+import api.educai.enums.Role;
+import api.educai.repositories.UserRespository;
 import api.educai.services.UserService;
 import api.educai.utils.annotations.Authorized;
 import api.educai.utils.token.Token;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.lang.reflect.Method;
-
-@Aspect
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
     private Token token = new Token();
     @Autowired
-    private UserService userService;
+    private UserRespository userRespository;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (handler instanceof Method) {
-            Method method = (Method) handler;
-
-            if (method.isAnnotationPresent(Authorized.class)) {
-                String authorization = request.getHeader("Authorization");
-
-                if (authorization.isBlank()) {
-                    response.setStatus(409);
-                    response.getWriter().write("Token is not present in header 'Authorization'.");
-                    return false;
-                }
-
-                ObjectId userId = token.getUserIdByToken(request.getHeader("Authorization"));
-
-                if(userService.userIdExists(request.getHeader("Authorization"))) {
-                    response.setStatus(409);
-                    response.getWriter().write("Invalid token");
-                    return false;
-                }
-
-                request.setAttribute("userId", userId);
-            }
+        if(!request.getMethod().equals("PATCH")) {
+            return true;
         }
+
+        String authorization = request.getHeader("Authorization");
+
+        if (authorization == null || authorization.isBlank()) {
+            response.setStatus(401);
+            response.getWriter().write("Token is not present in header 'Authorization'.");
+            return false;
+        }
+
+        String requestToken = authorization.replace("Bearer ", "");
+
+        ObjectId userId = token.getUserIdByToken(requestToken);
+        Role userRole = token.getUserRoleByToken(requestToken);
+
+        request.setAttribute("userId", userId);
+        request.setAttribute("userRole", userRole);
 
         return true;
     }
