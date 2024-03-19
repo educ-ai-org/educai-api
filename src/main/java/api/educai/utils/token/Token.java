@@ -1,6 +1,7 @@
 package api.educai.utils.token;
 
 import api.educai.entities.User;
+import api.educai.enums.Role;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -24,8 +25,13 @@ public class Token implements IToken{
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(tokenSecretKey)).build();
         DecodedJWT decodedJWT = verifier.verify(token);
 
-        ObjectId userId = new ObjectId(decodedJWT.getClaims().get("id").asString());
+        return new ObjectId(decodedJWT.getClaims().get("id").asString());
+    }
 
-        return userId;
+    public Role getUserRoleByToken(String token) {
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(tokenSecretKey)).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+
+        return Role.valueOf(decodedJWT.getClaims().get("role").asString());
     }
 }

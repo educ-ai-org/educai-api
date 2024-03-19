@@ -2,6 +2,7 @@ package api.educai.services;
 
 import api.educai.dto.AuthDTO;
 import api.educai.dto.LoginDTO;
+import api.educai.dto.PatchUserEmailAndName;
 import api.educai.dto.TokenDTO;
 import api.educai.entities.User;
 import api.educai.repositories.UserRespository;
@@ -61,7 +62,45 @@ public class UserService {
         return new TokenDTO(token.getToken(user));
     }
 
+    public void deleteUser(String id) {
+        if(userIdExists(id)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "User not found!");
+        }
+
+        userRespository.deleteById(new ObjectId(id));
+    }
+
+    public User updateUserData(ObjectId id, PatchUserEmailAndName patchUserEmailAndName) {
+        validateUserId(id);
+
+        userRespository.updateEmailAndName(id, patchUserEmailAndName.getName(), patchUserEmailAndName.getEmail());
+
+        return userRespository.findById(id);
+    }
+
     private boolean emailAlreadyExists(String email) {
         return userRespository.existsByEmail(email);
+    }
+
+    public boolean userIdExists(String id) {
+        ObjectId userId = new ObjectId(id);
+
+        return userRespository.existsById(userId);
+    }
+
+    public boolean userIdExists(ObjectId id) {
+        return userRespository.existsById(id);
+    }
+
+    public void validateUserId(String id) {
+        if(!userIdExists(id)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "User not found");
+        }
+    }
+
+    public void validateUserId(ObjectId id) {
+        if(!userIdExists(id)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "User not found");
+        }
     }
 }

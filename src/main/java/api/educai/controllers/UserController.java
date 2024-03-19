@@ -2,13 +2,17 @@ package api.educai.controllers;
 
 import api.educai.dto.AuthDTO;
 import api.educai.dto.LoginDTO;
+import api.educai.dto.PatchUserEmailAndName;
 import api.educai.dto.TokenDTO;
 import api.educai.entities.User;
 import api.educai.services.UserService;
+import api.educai.utils.annotations.Authorized;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,4 +52,18 @@ public class UserController {
         return ResponseEntity.status(200).body(userService.getUsers());
     }
 
+    @PatchMapping
+    @Authorized
+    public ResponseEntity<User> updateUserData(HttpServletRequest request, @RequestBody @Valid PatchUserEmailAndName patchUserEmailAndName) {
+        ObjectId userId = (ObjectId) request.getAttribute("userId");
+
+        return ResponseEntity.status(200).body(userService.updateUserData(userId, patchUserEmailAndName));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable @NotBlank String id) {
+        userService.deleteUser(id);
+
+        return ResponseEntity.status(200).build();
+    }
 }
