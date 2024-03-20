@@ -1,5 +1,6 @@
 package api.educai.services;
 
+import api.educai.adapters.UserAdapter;
 import api.educai.dto.AuthDTO;
 import api.educai.dto.LoginDTO;
 import api.educai.dto.PatchUserEmailAndName;
@@ -23,22 +24,22 @@ public class UserService {
     private Token token = new Token();
     private RefreshToken refreshToken = new RefreshToken();
 
-    public User createUser(User user) {
+    public UserAdapter createUser(User user) {
         if(emailAlreadyExists(user.getEmail())) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(409), "Email already registered!");
         }
 
         user.encryptPassword();
 
-        return userRespository.save(user);
+        return new UserAdapter(userRespository.save(user));
     }
 
-    public List<User> getUsers() {
+    public List<UserAdapter> getUsers() {
         List<User> users = userRespository.findAll();
         if (users.isEmpty()) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(204), "No users found!");
         }
-        return users;
+        return users.stream().map(UserAdapter::new).toList();
     }
 
     public AuthDTO autUser(LoginDTO loginDTO) {
@@ -70,12 +71,12 @@ public class UserService {
         userRespository.deleteById(new ObjectId(id));
     }
 
-    public User updateUserData(ObjectId id, PatchUserEmailAndName patchUserEmailAndName) {
+    public UserAdapter updateUserData(ObjectId id, PatchUserEmailAndName patchUserEmailAndName) {
         validateUserId(id);
 
         userRespository.updateEmailAndName(id, patchUserEmailAndName.getName(), patchUserEmailAndName.getEmail());
 
-        return userRespository.findById(id);
+        return new UserAdapter(userRespository.findById(id));
     }
 
     private boolean emailAlreadyExists(String email) {

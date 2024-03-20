@@ -1,5 +1,6 @@
 package api.educai.controllers;
 
+import api.educai.adapters.UserAdapter;
 import api.educai.dto.AuthDTO;
 import api.educai.dto.LoginDTO;
 import api.educai.dto.PatchUserEmailAndName;
@@ -25,7 +26,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody @Valid User user) {
+    public ResponseEntity<UserAdapter> createUser(@RequestBody @Valid User user) {
         return ResponseEntity.status(201).body(userService.createUser(user));
     }
 
@@ -48,13 +49,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<UserAdapter>> getUsers() {
         return ResponseEntity.status(200).body(userService.getUsers());
     }
 
     @PatchMapping
     @Authorized
-    public ResponseEntity<User> updateUserData(HttpServletRequest request, @RequestBody @Valid PatchUserEmailAndName patchUserEmailAndName) {
+    public ResponseEntity<UserAdapter> updateUserData(HttpServletRequest request, @RequestBody @Valid PatchUserEmailAndName patchUserEmailAndName) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 
         return ResponseEntity.status(200).body(userService.updateUserData(userId, patchUserEmailAndName));
