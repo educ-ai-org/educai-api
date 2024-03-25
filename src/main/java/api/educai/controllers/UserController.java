@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.ResponseEntity.status;
+
 @RestController
 @RequestMapping("user")
 public class UserController {
@@ -27,7 +29,7 @@ public class UserController {
     private UserService userService;
     @PostMapping
     public ResponseEntity<UserAdapter> createUser(@RequestBody @Valid User user) {
-        return ResponseEntity.status(201).body(userService.createUser(user));
+        return status(201).body(userService.createUser(user));
     }
 
     @PostMapping("/auth")
@@ -40,17 +42,17 @@ public class UserController {
         cookie.setHttpOnly(true);
 
         response.addCookie(cookie);
-        return ResponseEntity.status(200).body(authDTO);
+        return status(200).body(authDTO);
     }
 
     @PostMapping("/refreshToken")
     public ResponseEntity<TokenDTO> refreshToken(@CookieValue(name = "refreshToken") @NotBlank String refreshToken) {
-        return ResponseEntity.status(200).body(userService.renewUserToken(refreshToken));
+        return status(200).body(userService.renewUserToken(refreshToken));
     }
 
     @GetMapping
     public ResponseEntity<List<UserAdapter>> getUsers() {
-        return ResponseEntity.status(200).body(userService.getUsers());
+        return status(200).body(userService.getUsers());
     }
 
     @PatchMapping
@@ -58,13 +60,13 @@ public class UserController {
     public ResponseEntity<UserAdapter> updateUserData(HttpServletRequest request, @RequestBody @Valid PatchUserEmailAndName patchUserEmailAndName) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 
-        return ResponseEntity.status(200).body(userService.updateUserData(userId, patchUserEmailAndName));
+        return status(200).body(userService.updateUserData(userId, patchUserEmailAndName));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable @NotBlank String id) {
         userService.deleteUser(id);
 
-        return ResponseEntity.status(200).build();
+        return status(200).build();
     }
 }
