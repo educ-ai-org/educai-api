@@ -7,4 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 
-public interface ClassroomRepository extends MongoRepository <Classroom, Long> { }
+public interface ClassroomRepository extends MongoRepository <Classroom, Long> {
+    Classroom findById(ObjectId id);
+}

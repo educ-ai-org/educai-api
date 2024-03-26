@@ -1,6 +1,7 @@
 package api.educai.controllers;
 
 import api.educai.adapters.UserAdapter;
+import api.educai.adapters.ClassroomInfoAdapter;
 import api.educai.dto.AuthDTO;
 import api.educai.dto.LoginDTO;
 import api.educai.dto.PatchUserEmailAndName;
@@ -68,5 +69,19 @@ public class UserController {
         userService.deleteUser(id);
 
         return status(200).build();
+    }
+
+    @GetMapping("/classrooms")
+    @Authorized
+    public ResponseEntity<List<ClassroomInfoAdapter>> getUserClassrooms(HttpServletRequest request) {
+        ObjectId userId = (ObjectId) request.getAttribute("userId");
+
+        List<ClassroomInfoAdapter> classrooms = userService.getUserClassrooms(userId);
+
+        if(classrooms.isEmpty()) {
+            return status(204).build();
+        }
+
+        return status(200).body(classrooms);
     }
 }

@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,12 @@ public class Classroom {
     @NotBlank
     @Size(max = 50)
     private String course;
-    @DBRef
+    @DocumentReference
     private List<User> participants = new ArrayList<>();
+
+    public ObjectId getId() {
+        return id;
+    }
 
     public String getTitle() {
         return title;
