@@ -1,6 +1,7 @@
 package api.educai.services;
 
 import api.educai.adapters.UserAdapter;
+import api.educai.adapters.ClassroomInfoAdapter;
 import api.educai.dto.AuthDTO;
 import api.educai.dto.LoginDTO;
 import api.educai.dto.PatchUserEmailAndName;
@@ -25,9 +26,7 @@ public class UserService {
     private RefreshToken refreshToken = new RefreshToken();
 
     public UserAdapter createUser(User user) {
-        if(emailAlreadyExists(user.getEmail())) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(409), "Email already registered!");
-        }
+        validateUserEmail(user.getEmail());
 
         user.encryptPassword();
 
@@ -64,9 +63,7 @@ public class UserService {
     }
 
     public void deleteUser(String id) {
-        if(userIdExists(id)) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "User not found!");
-        }
+        validateUserId(new ObjectId(id));
 
         userRespository.deleteById(new ObjectId(id));
     }
@@ -74,34 +71,51 @@ public class UserService {
     public UserAdapter updateUserData(ObjectId id, PatchUserEmailAndName patchUserEmailAndName) {
         validateUserId(id);
 
+        User user = getUserById(id);
+        if(!user.getEmail().equals(patchUserEmailAndName.getEmail())) {
+            validateUserEmail(patchUserEmailAndName.getEmail());
+        }
+
         userRespository.updateEmailAndName(id, patchUserEmailAndName.getName(), patchUserEmailAndName.getEmail());
 
         return new UserAdapter(userRespository.findById(id));
     }
 
-    private boolean emailAlreadyExists(String email) {
-        return userRespository.existsByEmail(email);
+    public void addClassroom(ObjectId id, ObjectId classroomId) {
+        validateUserId(id);
+
+        userRespository.addClassroom(id, classroomId);
     }
 
-    public boolean userIdExists(String id) {
-        ObjectId userId = new ObjectId(id);
+    public List<ClassroomInfoAdapter> getUserClassrooms(ObjectId id) {
+        User user = getUserById(id);
 
-        return userRespository.existsById(userId);
+        return user.getClassrooms().stream().map(ClassroomInfoAdapter::new).toList();
+    }
+
+    private void validateUserEmail(String email) {
+        if(userRespository.existsByEmail(email)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(409), "Email already registered!");
+        }
     }
 
     public boolean userIdExists(ObjectId id) {
         return userRespository.existsById(id);
     }
 
-    public void validateUserId(String id) {
+    public void validateUserId(ObjectId id) {
         if(!userIdExists(id)) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404), "User not found");
         }
     }
 
-    public void validateUserId(ObjectId id) {
-        if(!userIdExists(id)) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "User not found");
+    public User getUserById(ObjectId id) {
+        User user = userRespository.findById(id);
+
+        if(user == null) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Invalid Token");
         }
+
+        return user;
     }
 }

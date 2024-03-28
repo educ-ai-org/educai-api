@@ -1,5 +1,6 @@
 package api.educai;
 
+import api.educai.middlewares.RoleInterceptor;
 import api.educai.middlewares.TokenInterceptor;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,5 +15,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new TokenInterceptor());
+        registry.addInterceptor(new RoleInterceptor());
     }
 }
