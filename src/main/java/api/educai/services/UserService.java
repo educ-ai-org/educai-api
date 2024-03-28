@@ -1,6 +1,7 @@
 package api.educai.services;
 
 import api.educai.adapters.UserAdapter;
+import api.educai.adapters.ClassroomInfoAdapter;
 import api.educai.dto.AuthDTO;
 import api.educai.dto.LoginDTO;
 import api.educai.dto.PatchUserEmailAndName;
@@ -78,6 +79,18 @@ public class UserService {
         userRespository.updateEmailAndName(id, patchUserEmailAndName.getName(), patchUserEmailAndName.getEmail());
 
         return new UserAdapter(userRespository.findById(id));
+    }
+
+    public void addClassroom(ObjectId id, ObjectId classroomId) {
+        validateUserId(id);
+
+        userRespository.addClassroom(id, classroomId);
+    }
+
+    public List<ClassroomInfoAdapter> getUserClassrooms(ObjectId id) {
+        User user = getUserById(id);
+
+        return user.getClassrooms().stream().map(ClassroomInfoAdapter::new).toList();
     }
 
     private void validateUserEmail(String email) {
