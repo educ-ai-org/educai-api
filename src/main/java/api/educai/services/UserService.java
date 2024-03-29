@@ -1,5 +1,7 @@
 package api.educai.services;
 
+import api.educai.adapters.StudentClassroomsAdapter;
+import api.educai.adapters.TeacherClassroomsAdapter;
 import api.educai.adapters.UserAdapter;
 import api.educai.adapters.ClassroomInfoAdapter;
 import api.educai.dto.AuthDTO;
@@ -7,6 +9,7 @@ import api.educai.dto.LoginDTO;
 import api.educai.dto.PatchUserEmailAndName;
 import api.educai.dto.TokenDTO;
 import api.educai.entities.User;
+import api.educai.enums.Role;
 import api.educai.repositories.UserRespository;
 import api.educai.utils.token.RefreshToken;
 import api.educai.utils.token.Token;
@@ -87,10 +90,19 @@ public class UserService {
         userRespository.addClassroom(id, classroomId);
     }
 
-    public List<ClassroomInfoAdapter> getUserClassrooms(ObjectId id) {
+    public List<? extends ClassroomInfoAdapter> getUserClassrooms(ObjectId id) {
         User user = getUserById(id);
 
-        return user.getClassrooms().stream().map(ClassroomInfoAdapter::new).toList();
+        if(user.getRole().equals(Role.TEACHER)) {
+            return user.getClassrooms().stream().map(classroom -> {
+                int classroomStudentsCount = (int) classroom.getParticipants().stream().filter(student -> student.getRole().equals(Role.STUDENT)).count();
+
+                return new TeacherClassroomsAdapter(classroom, classroomStudentsCount);
+            }).toList();
+        } else {
+            //TODO -> Retornar as atividades pendentes caso seja um estudante
+            return user.getClassrooms().stream().map(classroom -> new StudentClassroomsAdapter(classroom, 3)).toList();
+        }
     }
 
     private void validateUserEmail(String email) {
