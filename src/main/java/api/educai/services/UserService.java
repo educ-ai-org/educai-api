@@ -45,7 +45,7 @@ public class UserService {
     }
 
     public AuthDTO autUser(LoginDTO loginDTO) {
-        User user = userRespository.findByEmail(loginDTO.getEmail());
+        User user = getUserByEmail(loginDTO.getEmail());
 
         if(user == null || !user.passwordIsValid(loginDTO.getPassword())) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(401), "E-mail or password are invalid!");
@@ -106,13 +106,17 @@ public class UserService {
     }
 
     private void validateUserEmail(String email) {
-        if(userRespository.existsByEmail(email)) {
+        if(userEmailAlreadyExists(email)) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(409), "Email already registered!");
         }
     }
 
     public boolean userIdExists(ObjectId id) {
         return userRespository.existsById(id);
+    }
+
+    public boolean userEmailAlreadyExists(String email) {
+        return userRespository.existsByEmail(email);
     }
 
     public void validateUserId(ObjectId id) {
@@ -129,5 +133,9 @@ public class UserService {
         }
 
         return user;
+    }
+
+    public User getUserByEmail(String email) {
+        return userRespository.findByEmail(email);
     }
 }

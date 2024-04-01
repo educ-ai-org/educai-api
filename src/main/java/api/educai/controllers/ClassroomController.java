@@ -2,6 +2,7 @@ package api.educai.controllers;
 
 import api.educai.adapters.ClassroomDataAdapter;
 import api.educai.adapters.ClassroomInfoAdapter;
+import api.educai.adapters.UserAdapter;
 import api.educai.entities.Classroom;
 import api.educai.services.ClassroomService;
 import api.educai.utils.annotations.Authorized;
@@ -34,5 +35,14 @@ public class ClassroomController {
         ClassroomDataAdapter users = classroomService.getClassroomDataById(id);
 
         return status(200).body(users);
+    }
+
+    @PostMapping("/{id}/invite")
+    @Authorized
+    @Teacher
+    public ResponseEntity<Void> inviteUser(@PathVariable ObjectId id, @RequestBody @Valid UserAdapter user) {
+        classroomService.inviteUser(id, user);
+
+        return status(201).build();
     }
 }
