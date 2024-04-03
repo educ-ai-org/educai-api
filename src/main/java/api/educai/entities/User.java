@@ -51,4 +51,8 @@ public class User {
     public boolean passwordIsValid(String password) {
         return passwordEncoder.matches(password, this.password);
     }
+
+    public boolean isUserEnrolledInClassroom(ObjectId classroomId) {
+        return classrooms.stream().anyMatch(classroom -> classroom.getId().equals(classroomId));
+    }
 }

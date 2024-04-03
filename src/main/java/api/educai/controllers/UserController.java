@@ -73,10 +73,12 @@ public class UserController {
 
     @GetMapping("/classrooms")
     @Authorized
-    public ResponseEntity<List<ClassroomInfoAdapter>> getUserClassrooms(HttpServletRequest request) {
+    public ResponseEntity<List<? extends ClassroomInfoAdapter>> getUserClassrooms(HttpServletRequest request) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 
-        List<ClassroomInfoAdapter> classrooms = userService.getUserClassrooms(userId);
+        List<? extends ClassroomInfoAdapter> classrooms = userService.getUserClassrooms(userId);
+
+        System.out.println(classrooms);
 
         if(classrooms.isEmpty()) {
             return status(204).build();
