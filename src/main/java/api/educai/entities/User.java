@@ -8,8 +8,13 @@ import jakarta.validation.constraints.Size;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Document
 public class User {
@@ -27,6 +32,8 @@ public class User {
     private String password;
     @NotNull
     private Role role;
+    @DocumentReference
+    private List<Classroom> classrooms = new ArrayList<>();
 
     public User(String name, String email, String password, Role role) {
         this.name = name;
@@ -65,6 +72,10 @@ public class User {
 
     public void encryptPassword() {
         password = passwordEncoder.encode(password);
+    }
+
+    public List<Classroom> getClassrooms() {
+        return classrooms;
     }
 
     public boolean passwordIsValid(String password) {

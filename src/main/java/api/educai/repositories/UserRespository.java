@@ -1,6 +1,6 @@
 package api.educai.repositories;
 
-import api.educai.dto.PatchUserEmailAndName;
+import api.educai.entities.Classroom;
 import api.educai.entities.User;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -17,4 +17,8 @@ public interface UserRespository extends MongoRepository <User, Long> {
     @Query("{'id': ?0}")
     @Update("{'$set': { 'name': ?1, 'email': ?2 }}")
     void updateEmailAndName(ObjectId id, String name, String email);
+
+    @Query("{'id': ?0}")
+    @Update("{'$push': { 'classrooms': ?1 }}'")
+    void addClassroom(ObjectId id, ObjectId classroomId);
 }
