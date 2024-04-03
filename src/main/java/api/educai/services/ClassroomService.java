@@ -90,6 +90,12 @@ public class ClassroomService {
         }
     }
 
+    public List<UserAdapter> getClassroomParticipants(ObjectId id) {
+        Classroom classroom = getClassroomById(id);
+
+        return classroom.getParticipants().stream().map(UserAdapter::new).toList();
+    }
+
     private Classroom getClassroomById(ObjectId id) {
         Classroom classroom = classroomRepository.findById(id);
 

@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
@@ -44,5 +46,11 @@ public class ClassroomController {
         classroomService.inviteUser(id, user);
 
         return status(201).build();
+    }
+
+    @GetMapping("/{id}/participants")
+    @Authorized
+    public ResponseEntity<List<UserAdapter>> getClassroomParticipants(@PathVariable ObjectId id) {
+        return status(200).body(classroomService.getClassroomParticipants(id));
     }
 }
