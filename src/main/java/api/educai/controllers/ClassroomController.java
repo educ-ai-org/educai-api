@@ -1,6 +1,5 @@
 package api.educai.controllers;
 
-import api.educai.adapters.ClassroomDataAdapter;
 import api.educai.adapters.ClassroomInfoAdapter;
 import api.educai.adapters.UserAdapter;
 import api.educai.entities.Classroom;
@@ -33,8 +32,8 @@ public class ClassroomController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClassroomDataAdapter> getClassroomBy(@PathVariable ObjectId id) {
-        ClassroomDataAdapter users = classroomService.getClassroomDataById(id);
+    public ResponseEntity<ClassroomInfoAdapter> getClassroomBy(@PathVariable ObjectId id) {
+        ClassroomInfoAdapter users = classroomService.getClassroomDataById(id);
 
         return status(200).body(users);
     }
