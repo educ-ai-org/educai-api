@@ -3,6 +3,7 @@ package api.educai.services;
 import api.educai.adapters.ClassroomDataAdapter;
 import api.educai.adapters.ClassroomInfoAdapter;
 import api.educai.adapters.UserAdapter;
+import api.educai.dto.AddStudentInClassroomDTO;
 import api.educai.dto.ClassroomParticipantsDTO;
 import api.educai.dto.NewStudentEmailDTO;
 import api.educai.entities.Classroom;
@@ -70,7 +71,22 @@ public class ClassroomService {
             User user = userService.getUserByEmail(newUser.getEmail());
             Classroom classroom = getClassroomById(id);
 
+            if(user.isUserEnrolledInClassroom(id)) {
+                throw new ResponseStatusException(HttpStatusCode.valueOf(409), "This user is already registered in this classroom");
+            }
+
             addUserInClassroom(classroom, user);
+
+            AddStudentInClassroomDTO addStudentInClassroomDTO = new AddStudentInClassroomDTO(
+                    user.getEmail(),
+                    classroom.getCourse() + " - " + classroom.getTitle()
+            );
+
+            try {
+                EmailService.sendEmailAddUserInClassroom(addStudentInClassroomDTO);
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
