@@ -2,7 +2,9 @@ package api.educai.controllers;
 
 import api.educai.adapters.ClassroomInfoAdapter;
 import api.educai.adapters.UserAdapter;
+import api.educai.dto.ClassworkDTO;
 import api.educai.entities.Classroom;
+import api.educai.entities.Classwork;
 import api.educai.services.ClassroomService;
 import api.educai.utils.annotations.Authorized;
 import api.educai.utils.annotations.Teacher;
@@ -52,4 +54,10 @@ public class ClassroomController {
     public ResponseEntity<List<UserAdapter>> getClassroomParticipants(@PathVariable ObjectId id) {
         return status(200).body(classroomService.getClassroomParticipants(id));
     }
+    @GetMapping("/{id}/classworks")
+    public ResponseEntity<List<ClassworkDTO>> getClassworksByClassroom(@PathVariable ObjectId id) {
+        List<ClassworkDTO> classworks = classroomService.getClassworks(id);
+        return classworks.isEmpty() ? status(204).build() : status(200).body(classworks);
+    }
+
 }
