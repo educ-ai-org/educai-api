@@ -23,6 +23,9 @@ public class Classroom {
     private String course;
     @DocumentReference
     private List<User> participants = new ArrayList<>();
+    @DocumentReference
+    private List<Post> posts = new ArrayList<>();
+
 
     public ObjectId getId() {
         return id;
@@ -40,7 +43,10 @@ public class Classroom {
         return participants;
     }
 
+    public List<Post> getPosts() { return posts; }
+
     public void addParticipant(User user) {
         participants.add(user);
     }
+    public void addPost(Post post) { posts.add(post); }
 }
