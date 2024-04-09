@@ -2,6 +2,7 @@ package api.educai.entities;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Document
 public class Classroom {
     @Id
