@@ -1,6 +1,8 @@
 package api.educai.services;
 
+import api.educai.dto.AnswerDTO;
 import api.educai.entities.*;
+import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
 import api.educai.repositories.ClassworkRepository;
 import org.bson.types.ObjectId;
@@ -17,11 +19,15 @@ public class ClassworkService {
     private ClassworkRepository classworkRepository;
     @Autowired
     private ClassroomRepository classroomRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @Autowired
     private ClassroomService classroomService;
     @Autowired
     private QuestionService questionService;
+    @Autowired
+    private UserService userService;
 
     public Classwork createClasswork(Classwork classwork, ObjectId classroomId, ObjectId userId) {
 
@@ -46,6 +52,17 @@ public class ClassworkService {
         questionService.addOptions(options);
     }
 
+    public void addAnswer(Answer answer, ObjectId userId, ObjectId classworkId) {
+        Classwork classwork = getClassworkById(classworkId);
+
+        answer.setUser(userService.getUserById(userId));
+        answer.setClasswork(classwork);
+        answerRepository.save(answer);
+
+        classwork.addAnswer(answer);
+        classworkRepository.save(classwork);
+    }
+
     public Classwork getClassworkById(ObjectId id) {
         Classwork classwork = classworkRepository.findById(id);
 
@@ -54,6 +71,11 @@ public class ClassworkService {
         }
 
         return classwork;
+    }
+
+    public List<AnswerDTO> getAnswers(ObjectId classworkId) {
+        Classwork classwork = classworkRepository.findById(classworkId);
+        return classwork.getAnswers().stream().map(AnswerDTO::new).toList();
     }
 
 }

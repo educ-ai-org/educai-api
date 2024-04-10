@@ -34,4 +34,8 @@ public class Classwork {
     @DocumentReference
     private List<Answer> answers = new ArrayList<>();
 
+    public void addAnswer(Answer answer) {
+        answers.add(answer);
+    }
+
 }
