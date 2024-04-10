@@ -2,53 +2,54 @@ package api.educai.entities;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Data
 @Document
-public class Classroom {
+public class Post {
     @Id
     private ObjectId id;
     @NotBlank
     @Size(max = 100)
     private String title;
+    @Size(max = 100)
     @NotBlank
-    @Size(max = 50)
-    private String course;
-    @DocumentReference
-    private List<User> participants = new ArrayList<>();
-    @DocumentReference
-    private List<Post> posts = new ArrayList<>();
+    private String type;
+    @NotBlank
+    private String url;
 
 
     public ObjectId getId() {
         return id;
+    }
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getCourse() {
-        return course;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public List<User> getParticipants() {
-        return participants;
+    public String getType() {
+        return type;
     }
 
-    public List<Post> getPosts() { return posts; }
-
-    public void addParticipant(User user) {
-        participants.add(user);
+    public void setType(String type) {
+        this.type = type;
     }
-    public void addPost(Post post) { posts.add(post); }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }
