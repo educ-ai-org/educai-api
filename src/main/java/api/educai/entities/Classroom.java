@@ -26,6 +26,7 @@ public class Classroom {
     @DocumentReference
     private List<User> participants = new ArrayList<>();
     @DocumentReference
+    private List<Classwork> classworks = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
 
 
@@ -50,5 +51,8 @@ public class Classroom {
     public void addParticipant(User user) {
         participants.add(user);
     }
+
+    public void addClasswork(Classwork classwork) { classworks.add(classwork); }
+
     public void addPost(Post post) { posts.add(post); }
 }

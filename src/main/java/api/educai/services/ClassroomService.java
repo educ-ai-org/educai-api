@@ -4,7 +4,10 @@ import api.educai.adapters.ClassroomInfoAdapter;
 import api.educai.adapters.UserAdapter;
 import api.educai.dto.AddStudentInClassroomDTO;
 import api.educai.dto.NewStudentEmailDTO;
+import api.educai.dto.ClassroomParticipantsDTO;
+import api.educai.dto.ClassworkDTO;
 import api.educai.entities.Classroom;
+import api.educai.entities.Classwork;
 import api.educai.entities.User;
 import api.educai.repositories.ClassroomRepository;
 import api.educai.utils.PasswordGenerator;
@@ -89,7 +92,7 @@ public class ClassroomService {
         return classroom.getParticipants().stream().map(UserAdapter::new).toList();
     }
 
-    private Classroom getClassroomById(ObjectId id) {
+    public Classroom getClassroomById(ObjectId id) {
         Classroom classroom = classroomRepository.findById(id);
 
         if(classroom == null) {
@@ -104,4 +107,9 @@ public class ClassroomService {
         classroomRepository.save(classroom);
         userService.addClassroom(user.getId(), classroom.getId());
     }
+    public List<ClassworkDTO> getClassworks(ObjectId id) {
+        Classroom classroom = getClassroomById(id);
+        return classroom.getClassworks().stream().map(ClassworkDTO::new).toList();
+    }
+
 }
