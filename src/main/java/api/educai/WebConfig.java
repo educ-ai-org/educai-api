@@ -12,9 +12,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @ComponentScan({ "api.educai" })
 public class WebConfig implements WebMvcConfigurer {
+    private static final String[] INTERCEPTOR_EXCLUDED_URLS = { "/swagger-ui/**" };
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TokenInterceptor());
-        registry.addInterceptor(new RoleInterceptor());
+        registry
+                .addInterceptor(new TokenInterceptor())
+                .excludePathPatterns(INTERCEPTOR_EXCLUDED_URLS);
+        registry
+                .addInterceptor(new RoleInterceptor())
+                .excludePathPatterns(INTERCEPTOR_EXCLUDED_URLS);
     }
 }
