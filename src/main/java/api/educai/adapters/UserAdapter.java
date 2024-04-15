@@ -15,6 +15,12 @@ public class UserAdapter {
         this.role = user.getRole();
     }
 
+    public UserAdapter(String name, String email, Role role) {
+        this.name = name;
+        this.email = email;
+        this.role = role;
+    }
+
     public String getName() {
         return name;
     }
