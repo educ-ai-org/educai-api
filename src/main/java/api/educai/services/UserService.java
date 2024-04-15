@@ -105,6 +105,10 @@ public class UserService {
         }
     }
 
+    public void logoff(ObjectId id, String refreshToken, String accessToken) {
+
+    }
+
     private void validateUserEmail(String email) {
         if(userEmailAlreadyExists(email)) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(409), "Email already registered!");

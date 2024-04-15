@@ -7,9 +7,11 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Value;
 
 public class Token implements IToken{
-    private static String tokenSecretKey = "AWDHAUDBdadbabwudADbWUDuidawduadopçawpoiacnacanockno-iI0UOadipdiwPDB9puudaw9d087dwD9";
+    @Value("${jwt.token.secret}")
+    private String tokenSecretKey;
 
     public String getToken(User user) {
         long exp = System.currentTimeMillis() + (15 * 60 * 1000); //Expires in 15 minutes

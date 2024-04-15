@@ -6,9 +6,11 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Value;
 
 public class RefreshToken implements IToken {
-    private static String refreshSecretKey = "bauodBOdqdmMMdadjnpandopadnoapñdpAW67DAWT8Ag8dÇADÇAÇçADJANDHNJAWIODUOA";
+    @Value("${jwt.refreshToken.secret}")
+    private String refreshSecretKey;
 
     @Override
     public String getToken(User user) {

@@ -78,12 +78,23 @@ public class UserController {
 
         List<? extends ClassroomInfoAdapter> classrooms = userService.getUserClassrooms(userId);
 
-        System.out.println(classrooms);
-
         if(classrooms.isEmpty()) {
             return status(204).build();
         }
 
         return status(200).body(classrooms);
+    }
+
+    @GetMapping("/logoff")
+    @Authorized
+    public ResponseEntity<Void> logoff(HttpServletRequest request, @CookieValue(name = "refreshToken") @NotBlank String refreshToken) {
+        ObjectId userId = (ObjectId) request.getAttribute("userId");
+
+        String authorization = request.getHeader("Authorization");
+        String requestToken = authorization.replace("Bearer ", "");
+
+        userService.logoff(userId, refreshToken, requestToken);
+
+        return status(200).build();
     }
 }
