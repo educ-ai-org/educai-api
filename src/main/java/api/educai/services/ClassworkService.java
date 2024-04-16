@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -63,7 +62,7 @@ public class ClassworkService {
 
         answer.setUser(userService.getUserById(userId));
         answer.setClasswork(classwork);
-        correctAnswer(answer);
+        answer.setCorrectPercentage(getAnswerScore(answer) * 10.0);
         answerRepository.save(answer);
 
         classwork.addAnswer(answer);
@@ -85,7 +84,7 @@ public class ClassworkService {
         return classwork.getAnswers().stream().map(AnswerDTO::new).toList();
     }
 
-    public void correctAnswer(Answer answer) {
+    public int getAnswerScore(Answer answer) {
 
         List<Question> questions = answer.getClasswork().getQuestions();
         List<QuestionAnswerDTO> answers = answer.getQuestionAnswers();
@@ -99,8 +98,9 @@ public class ClassworkService {
                 .collect(Collectors.toMap(QuestionAnswerDTO::getQuestionId, QuestionAnswerDTO::getOptionKey));
 
         int score = userCorrectAnswers.size() * CLASSWORK_SCORE / questions.size();
-        answer.setCorrectPercentage(score * 10.0);
-        answer.getUser().incrementScore(score);
+        userService.updateScore(score, answer.getUser());
+
+        return score;
 
     }
 
