@@ -1,6 +1,7 @@
 package api.educai.services;
 
 import api.educai.dto.AnswerDTO;
+import api.educai.dto.QuestionAnswerDTO;
 import api.educai.entities.*;
 import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
@@ -11,7 +12,10 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ClassworkService {
@@ -28,6 +32,8 @@ public class ClassworkService {
     private QuestionService questionService;
     @Autowired
     private UserService userService;
+
+    private final Integer CLASSWORK_SCORE = 10;
 
     public Classwork createClasswork(Classwork classwork, ObjectId classroomId, ObjectId userId) {
 
@@ -57,6 +63,7 @@ public class ClassworkService {
 
         answer.setUser(userService.getUserById(userId));
         answer.setClasswork(classwork);
+        correctAnswer(answer);
         answerRepository.save(answer);
 
         classwork.addAnswer(answer);
@@ -76,6 +83,25 @@ public class ClassworkService {
     public List<AnswerDTO> getAnswers(ObjectId classworkId) {
         Classwork classwork = classworkRepository.findById(classworkId);
         return classwork.getAnswers().stream().map(AnswerDTO::new).toList();
+    }
+
+    public void correctAnswer(Answer answer) {
+
+        List<Question> questions = answer.getClasswork().getQuestions();
+        List<QuestionAnswerDTO> answers = answer.getQuestionAnswers();
+
+        Map<ObjectId, String> correctAnswersMap = questions.stream()
+                .collect(Collectors.toMap(Question::getId, Question::getCorrectAnswerKey));
+
+        Map<ObjectId, String> userCorrectAnswers = answers.stream()
+                .filter(questionAnswer -> correctAnswersMap.containsKey(questionAnswer.getQuestionId()) &&
+                        correctAnswersMap.get(questionAnswer.getQuestionId()).equals(questionAnswer.getOptionKey()))
+                .collect(Collectors.toMap(QuestionAnswerDTO::getQuestionId, QuestionAnswerDTO::getOptionKey));
+
+        int score = userCorrectAnswers.size() * CLASSWORK_SCORE / questions.size();
+        answer.setCorrectPercentage(score * 10.0);
+        answer.getUser().incrementScore(score);
+
     }
 
 }

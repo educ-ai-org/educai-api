@@ -29,4 +29,6 @@ public class Answer {
 
     private List<QuestionAnswerDTO> questionAnswers;
 
+    private Double correctPercentage;
+
 }

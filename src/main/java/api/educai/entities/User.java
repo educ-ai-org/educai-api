@@ -36,12 +36,18 @@ public class User {
     private Role role;
     @DocumentReference
     private List<Classroom> classrooms = new ArrayList<>();
+    private Integer score;
 
     public User(String name, String email, String password, Role role) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.score = 0;
+    }
+
+    public void incrementScore(Integer score) {
+        this.score += score;
     }
 
     public void encryptPassword() {
