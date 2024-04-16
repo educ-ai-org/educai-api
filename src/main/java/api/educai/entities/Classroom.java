@@ -29,25 +29,6 @@ public class Classroom {
     private List<Classwork> classworks = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
 
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getCourse() {
-        return course;
-    }
-
-    public List<User> getParticipants() {
-        return participants;
-    }
-
-    public List<Post> getPosts() { return posts; }
-
     public void addParticipant(User user) {
         participants.add(user);
     }
