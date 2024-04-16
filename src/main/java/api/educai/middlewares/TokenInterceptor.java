@@ -9,15 +9,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Arrays;
 
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
-    private Token token = new Token();
+    @Autowired
+    private Token token;
     @Autowired
     private UserRespository userRespository;
     @Override
@@ -35,14 +39,17 @@ public class TokenInterceptor implements HandlerInterceptor {
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null || authorization.isBlank()) {
-            response.setStatus(401);
-            response.getWriter().write("Token is not present in header 'Authorization'.");
-            return false;
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token is not present in header 'Authorization'.");
         }
 
         String requestToken = authorization.replace("Bearer ", "");
 
         ObjectId userId = token.getUserIdByToken(requestToken);
+
+        if(token.isTokenBlacklisted(userId, requestToken)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Invalid Token");
+        }
+
         Role userRole = token.getUserRoleByToken(requestToken);
 
         request.setAttribute("userId", userId);

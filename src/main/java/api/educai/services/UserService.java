@@ -8,8 +8,10 @@ import api.educai.dto.AuthDTO;
 import api.educai.dto.LoginDTO;
 import api.educai.dto.PatchUserEmailAndName;
 import api.educai.dto.TokenDTO;
+import api.educai.entities.TokenBlacklist;
 import api.educai.entities.User;
 import api.educai.enums.Role;
+import api.educai.repositories.TokenBlacklistRepository;
 import api.educai.repositories.UserRespository;
 import api.educai.utils.token.RefreshToken;
 import api.educai.utils.token.Token;
@@ -20,12 +22,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
     @Autowired
     private UserRespository userRespository;
-    private Token token = new Token();
+    @Autowired
+    private TokenBlacklistRepository tokenBlacklistRepository;
+    @Autowired
+    private Token token;
+    @Autowired
     private RefreshToken refreshToken = new RefreshToken();
 
     public UserAdapter createUser(User user) {
@@ -106,7 +113,21 @@ public class UserService {
     }
 
     public void logoff(ObjectId id, String refreshToken, String accessToken) {
+        Optional<TokenBlacklist> tokenBlacklist = tokenBlacklistRepository.findById(id);
 
+        if(tokenBlacklist.isEmpty()) {
+            TokenBlacklist newTokenBlacklist = new TokenBlacklist(id);
+
+            newTokenBlacklist.addAccessToken(accessToken, token.getTokenExpirationTime(accessToken));
+            newTokenBlacklist.addRefreshToken(refreshToken, this.refreshToken.getTokenExpirationTime(refreshToken));
+
+            tokenBlacklistRepository.save(newTokenBlacklist);
+        } else {
+            tokenBlacklist.get().addAccessToken(accessToken, token.getTokenExpirationTime(accessToken));
+            tokenBlacklist.get().addRefreshToken(refreshToken, this.refreshToken.getTokenExpirationTime(refreshToken));
+
+            tokenBlacklistRepository.save(tokenBlacklist.get());
+        }
     }
 
     private void validateUserEmail(String email) {

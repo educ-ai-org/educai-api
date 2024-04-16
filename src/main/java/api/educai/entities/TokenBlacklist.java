@@ -1,16 +1,32 @@
 package api.educai.entities;
 
+import api.educai.dto.InvalidTokenDTO;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Data
 @Document
 public class TokenBlacklist {
-    private String accessToken;
-    private String refreshToken;
-    private LocalDateTime expirationDateTime;
-    private ObjectId userId;
+    private ObjectId id;
+    private List<InvalidTokenDTO> accessTokenList;
+    private List<InvalidTokenDTO> refreshTokenList;
+
+    public TokenBlacklist(ObjectId id) {
+        this.id = id;
+        this.accessTokenList = new ArrayList<>();
+        this.refreshTokenList = new ArrayList<>();
+    }
+
+    public void addAccessToken(String token, Date expirationTime) {
+        accessTokenList.add(new InvalidTokenDTO(token, expirationTime));
+    }
+
+    public void addRefreshToken(String refreshToken, Date expirationTime) {
+        refreshTokenList.add(new InvalidTokenDTO(refreshToken, expirationTime));
+    }
 }

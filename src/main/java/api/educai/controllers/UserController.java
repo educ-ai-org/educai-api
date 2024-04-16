@@ -85,7 +85,7 @@ public class UserController {
         return status(200).body(classrooms);
     }
 
-    @GetMapping("/logoff")
+    @PostMapping("/logoff")
     @Authorized
     public ResponseEntity<Void> logoff(HttpServletRequest request, @CookieValue(name = "refreshToken") @NotBlank String refreshToken) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
