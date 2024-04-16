@@ -69,7 +69,7 @@ public class UserController {
         userService.deleteUser(id);
 
         return status(200).build();
-    } 
+    }  
 
     @GetMapping("/classrooms")
     @Authorized
