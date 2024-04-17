@@ -1,9 +1,7 @@
 package api.educai.services;
 
-import api.educai.adapters.UserAdapter;
 import api.educai.entities.Classroom;
 import api.educai.entities.Post;
-import api.educai.entities.User;
 import api.educai.repositories.ClassroomRepository;
 import api.educai.repositories.PostRepository;
 import org.bson.types.ObjectId;

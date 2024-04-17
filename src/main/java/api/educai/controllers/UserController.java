@@ -1,7 +1,7 @@
 package api.educai.controllers;
 
-import api.educai.adapters.UserAdapter;
-import api.educai.adapters.ClassroomInfoAdapter;
+import api.educai.dto.UserDTO;
+import api.educai.dto.ClassroomInfoDTO;
 import api.educai.dto.AuthDTO;
 import api.educai.dto.LoginDTO;
 import api.educai.dto.PatchUserEmailAndName;
@@ -29,7 +29,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping
-    public ResponseEntity<UserAdapter> createUser(@RequestBody @Valid User user) {
+    public ResponseEntity<UserDTO> createUser(@RequestBody @Valid User user) {
         return status(201).body(userService.createUser(user));
     }
 
@@ -52,13 +52,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserAdapter>> getUsers() {
+    public ResponseEntity<List<UserDTO>> getUsers() {
         return status(200).body(userService.getUsers());
     }
 
     @PatchMapping
     @Authorized
-    public ResponseEntity<UserAdapter> updateUserData(HttpServletRequest request, @RequestBody @Valid PatchUserEmailAndName patchUserEmailAndName) {
+    public ResponseEntity<UserDTO> updateUserData(HttpServletRequest request, @RequestBody @Valid PatchUserEmailAndName patchUserEmailAndName) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 
         return status(200).body(userService.updateUserData(userId, patchUserEmailAndName));
@@ -73,10 +73,10 @@ public class UserController {
 
     @GetMapping("/classrooms")
     @Authorized
-    public ResponseEntity<List<? extends ClassroomInfoAdapter>> getUserClassrooms(HttpServletRequest request) {
+    public ResponseEntity<List<? extends ClassroomInfoDTO>> getUserClassrooms(HttpServletRequest request) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 
-        List<? extends ClassroomInfoAdapter> classrooms = userService.getUserClassrooms(userId);
+        List<? extends ClassroomInfoDTO> classrooms = userService.getUserClassrooms(userId);
 
         System.out.println(classrooms);
 
