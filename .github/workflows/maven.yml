@@ -16,6 +16,8 @@ on:
 
 jobs:
   build-and-tag:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
 
     steps:
