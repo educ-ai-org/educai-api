@@ -31,7 +31,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserAdapter> createUser(@RequestBody @Valid User user) {
         return status(201).body(userService.createUser(user));
-    } 
+    }    
 
     @PostMapping("/auth")
     public ResponseEntity<AuthDTO> authUser(@RequestBody @Valid LoginDTO loginDTO, HttpServletResponse response) {
