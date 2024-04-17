@@ -69,7 +69,7 @@ public class UserController {
         userService.deleteUser(id);
 
         return status(200).build();
-    }  
+    }
 
     @GetMapping("/classrooms")
     @Authorized
@@ -80,7 +80,7 @@ public class UserController {
 
         if(classrooms.isEmpty()) {
             return status(204).build();
-        } 
+        }
 
         return status(200).body(classrooms);
     }
