@@ -28,14 +28,14 @@ jobs:
     - name: Run tests
       run: mvn -B test
 
-    # - name: Bump version and push tag
-    #   id: tag_version
-    #   uses: mathieudutour/github-tag-action@v5.6
-    #   with:
-    #     github_token: ${{ secrets.GITHUB_TOKEN }}
-    #     default_bump: patch
-    #     initial_version: '1.0.0' # Sets the initial version if no tags exist
-    #     release_branches: main  # Ensures tags are only pushed on the main branch
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v5.6
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        default_bump: patch
+        initial_version: '1.0.0' # Sets the initial version if no tags exist
+        release_branches: main  # Ensures tags are only pushed on the main branch
 
     - name: Upload Artifact
       id: upload-artifact
@@ -52,4 +52,15 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.AZURE_VM_PORT }}
           source: "target/*.jar"
-          target: "/home/educai/"
+          target: "/home/educai/java-app"
+
+    - name: Move Java App to Docker Container
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.AZURE_VM_HOST }}
+        username: ${{ secrets.AZURE_VM_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.AZURE_VM_PORT }}
+        script: |
+          chmod +x /home/educai/script-backend.sh
+          /home/educai/script-backend.sh
