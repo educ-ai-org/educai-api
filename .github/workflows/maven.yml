@@ -28,14 +28,14 @@ jobs:
     - name: Run tests
       run: mvn -B test
 
-    - name: Bump version and push tag
-      id: tag_version
-      uses: mathieudutour/github-tag-action@v5.6
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        default_bump: patch
-        initial_version: '1.0.0' # Sets the initial version if no tags exist
-        release_branches: main  # Ensures tags are only pushed on the main branch
+    # - name: Bump version and push tag
+    #   id: tag_version
+    #   uses: mathieudutour/github-tag-action@v5.6
+    #   with:
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     default_bump: patch
+    #     initial_version: '1.0.0' # Sets the initial version if no tags exist
+    #     release_branches: main  # Ensures tags are only pushed on the main branch
 
     - name: Upload Artifact
       id: upload-artifact
@@ -46,7 +46,9 @@ jobs:
 
     - name: Get Artifact URL
       id: get-artifact-url
-      run: echo "::set-output name=url::$(echo \"https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts/${{ steps.upload-artifact.outputs.artifact_name }}/application.jar\")"
+      run: |
+        echo "Artifact ID: ${{ github.artifact.id }}"
+        echo "::set-output name=url::$(echo \"https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts/${{ github.artifact.id }}/application.jar\")"
 
     - name: Deploy to Azure VM
       uses: azure/CLI@v1
