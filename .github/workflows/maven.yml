@@ -42,7 +42,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: application
-        path: target/educai.jar
+        path: target/*.jar
         
     - name: Deploy to Azure VM
       uses: appleboy/scp-action@v0.1.7
@@ -51,5 +51,5 @@ jobs:
           username: ${{ secrets.AZURE_VM_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.AZURE_VM_PORT }}
-          source: "target/educai.jar"
+          source: "target/*.jar"
           target: "/home/educai/"
