@@ -47,9 +47,9 @@ jobs:
     - name: Get Artifact URL
       id: get-artifact-url
       run: |
-        echo "Artifact ID: ${{ steps.upload-artifact.outputs.artifact_name }}"
-        echo "::set-output name=url::$(echo \"https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts/${{ steps.upload-artifact.outputs.artifact_name }}/application.jar\")"
-
+        artifact_path=$(find $GITHUB_WORKSPACE -name "*.jar")
+        echo "::set-output name=url::$(echo \"https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts/${artifact_path}\")"
+        
     - name: Deploy to Azure VM
       uses: azure/CLI@v1
       with:
