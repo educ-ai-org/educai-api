@@ -43,11 +43,6 @@ jobs:
       with:
         name: application
         path: target/*.jar
-
-    - name: Get Artifact URL
-      id: get-artifact-url
-      run: |
-        echo "::set-output name=artifact_path::$(find target -name '*.jar')"
         
     - name: Deploy to Azure VM
       uses: azure/CLI@v1
@@ -59,4 +54,4 @@ jobs:
             --vm-name Educ.AI \
             --name customScript \
             --publisher Microsoft.Azure.Extensions \
-            --settings '{"fileUris":["https://github.com/${{ github.repository }}/releases/download/${{ github.run_id }}/$(basename ${{ steps.upload-artifact.outputs.artifact_path }})"],"commandToExecute":"java -jar application.jar"}'
+            --settings '{"fileUris":["${{ github.artifact-url }}"],"commandToExecute":"java -jar application.jar"}'
