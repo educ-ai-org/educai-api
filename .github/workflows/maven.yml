@@ -38,10 +38,15 @@ jobs:
         release_branches: main  # Ensures tags are only pushed on the main branch
 
     - name: Upload Artifact
+      id: upload-artifact
       uses: actions/upload-artifact@v2
       with:
         name: application
         path: target/*.jar
+
+    - name: Get Artifact URL
+      id: get-artifact-url
+      run: echo "::set-output name=url::$(echo \"https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts/${{ steps.upload-artifact.outputs.artifact_name }}/application.jar\")"
 
     - name: Deploy to Azure VM
       uses: azure/CLI@v1
@@ -53,4 +58,4 @@ jobs:
             --vm-name Educ.AI \
             --name customScript \
             --publisher Microsoft.Azure.Extensions \
-            --settings '{"fileUris":["https://github.com/educ-ai-org/educai-api/actions/runs/${{ github.run_id }}/artifacts/${{ github.artifact.id }}/application.jar"],"commandToExecute":"java -jar application.jar"}'
+            --settings '{"fileUris":["${{ steps.get-artifact-url.outputs.url }}"],"commandToExecute":"java -jar application.jar"}'
