@@ -45,6 +45,11 @@ jobs:
         path: target/educai.jar
         
     - name: Deploy to Azure VM
-      run: |
-            scp -i "${{ secrets.SSH_PRIVATE_KEY }}" "target/educai.jar" "educai@20.51.193.153:/home/educai/"
-      
+      uses: appleboy/scp-action@master
+      with:
+          host: ${{ secrets.AZURE_VM_HOST }}
+          username: ${{ secrets.AZURE_VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.AZURE_VM_PORT }}
+          source: "target/educai.jar"
+          target: "/home/educai/"
