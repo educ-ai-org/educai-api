@@ -46,7 +46,6 @@ jobs:
     - name: Deploy to Azure VM
       uses: azure/CLI@v1
       with:
-        azcliversion: '2.0.0'
         inlineScript: |
           az login --service-principal -u ${{ secrets.AZURE_SERVICE_PRINCIPAL }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
           az vm extension set \
