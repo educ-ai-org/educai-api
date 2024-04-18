@@ -45,7 +45,6 @@ jobs:
         path: target/*.jar
         
     - name: Deploy to Azure VM
-      with:
-          run: |
+      run: |
             scp -i ${{ secrets.SSH_PRIVATE_KEY }} target/*.jar educai@20.51.193.153:/home/educai/java-app/
       
