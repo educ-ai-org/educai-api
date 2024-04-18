@@ -55,7 +55,7 @@ jobs:
           target: "/home/educai/java-app"
 
     - name: Move Java App to Docker Container
-      uses: appleboy/scp-action@v0.1.7
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.AZURE_VM_HOST }}
         username: ${{ secrets.AZURE_VM_USERNAME }}
@@ -63,4 +63,4 @@ jobs:
         port: ${{ secrets.AZURE_VM_PORT }}
         script: |
           chmod +x /home/educai/script-backend.sh
-          /home/educai/script-backend.sh
+          sh /home/educai/script-backend.sh
