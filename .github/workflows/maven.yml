@@ -53,4 +53,4 @@ jobs:
             --vm-name Educ.AI \
             --name customScript \
             --publisher Microsoft.Azure.Extensions \
-            --settings '{"fileUris":["https://github.com/${{ github.repository }}/raw/${{ github.ref }}/target/application.jar"],"commandToExecute":"java -jar application.jar"}'
+            --settings '{"fileUris":["https://github.com/educ-ai-org/educai-api/actions/runs/${{ github.run_id }}/artifacts/${{ github.artifact.id }}/application.jar"],"commandToExecute":"java -jar application.jar"}'
