@@ -45,7 +45,7 @@ jobs:
         path: target/educai.jar
         
     - name: Deploy to Azure VM
-      uses: appleboy/scp-action@master
+      uses: appleboy/scp-action@v0.1.7
       with:
           host: ${{ secrets.AZURE_VM_HOST }}
           username: ${{ secrets.AZURE_VM_USERNAME }}
