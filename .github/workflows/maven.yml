@@ -64,3 +64,4 @@ jobs:
         script: |
           chmod +x /home/educai/script-backend.sh
           sh /home/educai/script-backend.sh
+          
