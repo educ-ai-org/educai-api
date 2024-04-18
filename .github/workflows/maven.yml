@@ -45,12 +45,7 @@ jobs:
         path: target/*.jar
         
     - name: Deploy to Azure VM
-      uses: appleboy/scp-action@master
       with:
-          host: ${{ secrets.AZURE_VM_HOST }}
-          username: ${{ secrets.AZURE_VM_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}  # Use the secret containing your SSH private key
-          port: ${{ secrets.AZURE_VM_PORT }}
-          source: "target/*.jar"
-          target: "/java-app"
+          run: |
+            scp -i ${{ secrets.SSH_PRIVATE_KEY }} target/*.jar educai@20.51.193.153:/home/educai/java-app/
       
