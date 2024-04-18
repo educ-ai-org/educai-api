@@ -42,9 +42,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: application
-        path: target/*.jar
+        path: target/educai.jar
         
     - name: Deploy to Azure VM
       run: |
-            scp -i "${{ secrets.SSH_PRIVATE_KEY }}" "${{ steps.upload-artifact.outputs.artifact-url }}" educai@20.51.193.153:/home/educai/java-app/
+            scp -i "${{ secrets.SSH_PRIVATE_KEY }}" "target/educai.jar" "educai@20.51.193.153:/home/educai/"
       
