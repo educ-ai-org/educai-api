@@ -46,5 +46,5 @@ jobs:
         
     - name: Deploy to Azure VM
       run: |
-            scp -i ${{ secrets.SSH_PRIVATE_KEY }} target/*.jar educai@20.51.193.153:/home/educai/java-app/
+            scp -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ steps.upload-artifact.outputs.artifact-url }} educai@20.51.193.153:/home/educai/java-app/
       
