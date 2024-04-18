@@ -45,13 +45,12 @@ jobs:
         path: target/*.jar
         
     - name: Deploy to Azure VM
-      uses: azure/CLI@v1
+      uses: appleboy/scp-action@master
       with:
-        inlineScript: |
-          az login --service-principal -u ${{ secrets.AZURE_SERVICE_PRINCIPAL }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-          az vm extension set \
-            --resource-group Educ.AI \
-            --vm-name Educ.AI \
-            --name customScript \
-            --publisher Microsoft.Azure.Extensions \
-            --settings '{"fileUris":["${{ steps.upload-artifact.outputs.artifact-url }}"],"commandToExecute":"java -jar application.jar"}'
+          host: ${{ secrets.AZURE_VM_HOST }}
+          username: ${{ secrets.AZURE_VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # Use the secret containing your SSH private key
+          port: ${{ secrets.AZURE_VM_PORT }}
+          source: "target/*.jar"
+          target: "/java-app"
+      
