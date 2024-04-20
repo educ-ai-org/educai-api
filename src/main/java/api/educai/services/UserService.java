@@ -9,6 +9,7 @@ import api.educai.dto.LoginDTO;
 import api.educai.dto.PatchUserEmailAndName;
 import api.educai.dto.TokenDTO;
 import api.educai.entities.TokenBlacklist;
+import api.educai.entities.Answer;
 import api.educai.entities.User;
 import api.educai.enums.Role;
 import api.educai.repositories.TokenBlacklistRepository;
@@ -162,5 +163,10 @@ public class UserService {
 
     public User getUserByEmail(String email) {
         return userRespository.findByEmail(email);
+    }
+
+    public void updateScore(Integer score, User user) {
+        user.incrementScore(score);
+        userRespository.save(user);
     }
 }
