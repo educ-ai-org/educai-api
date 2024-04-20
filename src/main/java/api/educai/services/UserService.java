@@ -36,7 +36,7 @@ public class UserService {
     public List<UserAdapter> getUsers() {
         List<User> users = userRespository.findAll();
         if (users.isEmpty()) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(204), "No users found!");
+            throw new ResponseStatusException(HttpStatusCode.valueOf(201), "No users found!");
         }
         return users.stream().map(UserAdapter::new).toList();
     }
