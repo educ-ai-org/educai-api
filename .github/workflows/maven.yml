@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  CI:
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -43,7 +43,14 @@ jobs:
       with:
         name: application
         path: target/*.jar
-        
+
+  CD:
+    needs: [CI]
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
     - name: Deploy to Azure VM
       uses: appleboy/scp-action@v0.1.7
       with:
