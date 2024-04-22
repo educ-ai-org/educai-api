@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,7 +28,7 @@ public class ClassworkController {
     private ClassworkService classworkService;
     @PostMapping
     @Authorized
-    @Teacher
+    @Secured("ROLE_TEACHER")
     public ResponseEntity<Classwork> createClasswork(
             @RequestBody @Valid Classwork classwork,
             @RequestHeader ObjectId classroomId,

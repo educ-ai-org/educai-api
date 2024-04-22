@@ -19,6 +19,8 @@ import api.educai.utils.token.Token;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,6 +29,8 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    @Autowired
+    private AuthenticationManager authenticationManager;
     @Autowired
     private UserRespository userRespository;
     @Autowired
@@ -38,8 +42,6 @@ public class UserService {
 
     public UserAdapter createUser(User user) {
         validateUserEmail(user.getEmail());
-
-        user.encryptPassword();
 
         return new UserAdapter(userRespository.save(user));
     }
@@ -53,13 +55,10 @@ public class UserService {
     }
 
     public AuthDTO autUser(LoginDTO loginDTO) {
-        User user = getUserByEmail(loginDTO.getEmail());
+        var usernamePassword = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
+        var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        if(user == null || !user.passwordIsValid(loginDTO.getPassword())) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "E-mail or password are invalid!");
-        }
-
-        return new AuthDTO(token.getToken(user), refreshToken.getToken(user));
+        return new AuthDTO(token.getToken((User) auth.getPrincipal()), refreshToken.getToken((User) auth.getPrincipal()));
     }
 
     public TokenDTO renewUserToken(String userRefreshToken) {

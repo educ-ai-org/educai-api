@@ -4,6 +4,7 @@ import api.educai.entities.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,12 +20,16 @@ public class RefreshToken implements IToken {
 
     @Override
     public String getToken(User user) {
-        long exp = System.currentTimeMillis() + (15 * 24 * 60 * 60 * 1000); //Expires in 15 days
+        try {
+            long exp = System.currentTimeMillis() + (15 * 24 * 60 * 60 * 1000); //Expires in 15 days
 
-        return JWT.create()
-                .withClaim("exp", exp)
-                .withClaim("id", user.getId().toString())
-                .sign(Algorithm.HMAC256(refreshSecretKey));
+            return JWT.create()
+                    .withClaim("exp", exp)
+                    .withClaim("id", user.getId().toString())
+                    .sign(Algorithm.HMAC256(refreshSecretKey));
+        } catch(JWTCreationException ex) {
+            throw new RuntimeException("Error while generating refresh token");
+        }
     }
 
     @Override

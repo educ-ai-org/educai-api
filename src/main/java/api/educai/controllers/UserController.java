@@ -28,6 +28,7 @@ import static org.springframework.http.ResponseEntity.status;
 public class UserController {
     @Autowired
     private UserService userService;
+
     @PostMapping
     public ResponseEntity<UserAdapter> createUser(@RequestBody @Valid User user) {
         return status(201).body(userService.createUser(user));
@@ -57,7 +58,6 @@ public class UserController {
     }
 
     @PatchMapping
-    @Authorized
     public ResponseEntity<UserAdapter> updateUserData(HttpServletRequest request, @RequestBody @Valid PatchUserEmailAndName patchUserEmailAndName) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 
@@ -72,7 +72,6 @@ public class UserController {
     }
 
     @GetMapping("/classrooms")
-    @Authorized
     public ResponseEntity<List<? extends ClassroomInfoAdapter>> getUserClassrooms(HttpServletRequest request) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 
@@ -86,7 +85,6 @@ public class UserController {
     }
 
     @PostMapping("/logoff")
-    @Authorized
     public ResponseEntity<Void> logoff(HttpServletRequest request, @CookieValue(name = "refreshToken") @NotBlank String refreshToken) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 

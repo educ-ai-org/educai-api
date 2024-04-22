@@ -7,6 +7,7 @@ import api.educai.repositories.TokenBlacklistRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,18 @@ public class Token implements IToken{
     private TokenBlacklistRepository tokenBlacklistRepository;
 
     public String getToken(User user) {
-        long exp = System.currentTimeMillis() + (15 * 60 * 1000); //Expires in 15 minutes
+        try {
+            long exp = System.currentTimeMillis() + (15 * 60 * 1000); //Expires in 15 minutes
 
-        return JWT.create()
-                .withClaim("id", user.getId().toString())
-                .withClaim("role", user.getRole().toString())
-                .withClaim("exp", exp)
-                .sign(Algorithm.HMAC256(tokenSecretKey));
+            return JWT.create()
+                    .withIssuer("educ.ai-api")
+                    .withClaim("id", user.getId().toString())
+                    .withClaim("role", user.getRole().toString())
+                    .withClaim("exp", exp)
+                    .sign(Algorithm.HMAC256(tokenSecretKey));
+        } catch (JWTCreationException ex) {
+            throw new RuntimeException("Error while generating access token");
+        }
     }
 
     public ObjectId getUserIdByToken(String token) {

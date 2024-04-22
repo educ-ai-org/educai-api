@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +26,7 @@ public class ClassroomController {
     @Autowired
     private ClassroomService classroomService;
     @PostMapping
-    @Authorized
-    @Teacher
+    @Secured("ROLE_TEACHER")
     public ResponseEntity<ClassroomInfoAdapter> createClassroom(@RequestBody @Valid Classroom classroom, HttpServletRequest request) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 
@@ -41,8 +41,7 @@ public class ClassroomController {
     }
 
     @PostMapping("/{id}/invite")
-    @Authorized
-    @Teacher
+    @Secured("ROLE_TEACHER")
     public ResponseEntity<Void> inviteUser(@PathVariable ObjectId id, @RequestBody @Valid UserAdapter user) {
         classroomService.inviteUser(id, user);
 
@@ -50,10 +49,10 @@ public class ClassroomController {
     }
 
     @GetMapping("/{id}/participants")
-    @Authorized
     public ResponseEntity<List<UserAdapter>> getClassroomParticipants(@PathVariable ObjectId id) {
         return status(200).body(classroomService.getClassroomParticipants(id));
     }
+
     @GetMapping("/{id}/classworks")
     public ResponseEntity<List<ClassworkDTO>> getClassworksByClassroom(@PathVariable ObjectId id) {
         List<ClassworkDTO> classworks = classroomService.getClassworks(id);
