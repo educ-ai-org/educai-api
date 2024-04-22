@@ -51,6 +51,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Download Artifacts
+      uses: actions/download-artifact@v4
+      with:
+          name: application
+          path: target/
+          
     - name: Deploy to Azure VM
       uses: appleboy/scp-action@v0.1.7
       with:
