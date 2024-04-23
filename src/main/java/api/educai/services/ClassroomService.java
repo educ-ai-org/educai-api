@@ -1,13 +1,11 @@
 package api.educai.services;
 
-import api.educai.adapters.ClassroomInfoAdapter;
-import api.educai.adapters.UserAdapter;
+import api.educai.dto.ClassroomInfoDTO;
+import api.educai.dto.UserDTO;
 import api.educai.dto.AddStudentInClassroomDTO;
 import api.educai.dto.NewStudentEmailDTO;
-import api.educai.dto.ClassroomParticipantsDTO;
 import api.educai.dto.ClassworkDTO;
 import api.educai.entities.Classroom;
-import api.educai.entities.Classwork;
 import api.educai.entities.User;
 import api.educai.repositories.ClassroomRepository;
 import api.educai.utils.PasswordGenerator;
@@ -29,21 +27,21 @@ public class ClassroomService {
     @Autowired
     private UserService userService;
 
-    public ClassroomInfoAdapter createClassroom(Classroom classroom, ObjectId ownerId) {
+    public ClassroomInfoDTO createClassroom(Classroom classroom, ObjectId ownerId) {
         User user = userService.getUserById(ownerId);
 
         addUserInClassroom(classroom, user);
 
-        return new ClassroomInfoAdapter(classroom);
+        return new ClassroomInfoDTO(classroom);
     }
 
-    public ClassroomInfoAdapter getClassroomDataById(ObjectId id) {
+    public ClassroomInfoDTO getClassroomDataById(ObjectId id) {
         Classroom classroom = getClassroomById(id);
 
-        return new ClassroomInfoAdapter(classroom);
+        return new ClassroomInfoDTO(classroom);
     }
 
-    public void inviteUser(ObjectId id, UserAdapter newUser) {
+    public void inviteUser(ObjectId id, UserDTO newUser) {
         if(!userService.userEmailAlreadyExists(newUser.getEmail())) {
             String userPassword = PasswordGenerator.generate(8);
             User user = new User(newUser.getName(), newUser.getEmail(), userPassword, newUser.getRole());
@@ -86,10 +84,10 @@ public class ClassroomService {
         }
     }
 
-    public List<UserAdapter> getClassroomParticipants(ObjectId id) {
+    public List<UserDTO> getClassroomParticipants(ObjectId id) {
         Classroom classroom = getClassroomById(id);
 
-        return classroom.getParticipants().stream().map(UserAdapter::new).toList();
+        return classroom.getParticipants().stream().map(UserDTO::new).toList();
     }
 
     public Classroom getClassroomById(ObjectId id) {

@@ -1,10 +1,9 @@
 package api.educai.controllers;
 
-import api.educai.adapters.ClassroomInfoAdapter;
-import api.educai.adapters.UserAdapter;
+import api.educai.dto.ClassroomInfoDTO;
+import api.educai.dto.UserDTO;
 import api.educai.dto.ClassworkDTO;
 import api.educai.entities.Classroom;
-import api.educai.entities.Classwork;
 import api.educai.services.ClassroomService;
 import api.educai.utils.annotations.Authorized;
 import api.educai.utils.annotations.Teacher;
@@ -27,15 +26,15 @@ public class ClassroomController {
     @PostMapping
     @Authorized
     @Teacher
-    public ResponseEntity<ClassroomInfoAdapter> createClassroom(@RequestBody @Valid Classroom classroom, HttpServletRequest request) {
+    public ResponseEntity<ClassroomInfoDTO> createClassroom(@RequestBody @Valid Classroom classroom, HttpServletRequest request) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 
         return status(201).body(classroomService.createClassroom(classroom, userId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClassroomInfoAdapter> getClassroomBy(@PathVariable ObjectId id) {
-        ClassroomInfoAdapter users = classroomService.getClassroomDataById(id);
+    public ResponseEntity<ClassroomInfoDTO> getClassroomBy(@PathVariable ObjectId id) {
+        ClassroomInfoDTO users = classroomService.getClassroomDataById(id);
 
         return status(200).body(users);
     }
@@ -43,7 +42,7 @@ public class ClassroomController {
     @PostMapping("/{id}/invite")
     @Authorized
     @Teacher
-    public ResponseEntity<Void> inviteUser(@PathVariable ObjectId id, @RequestBody @Valid UserAdapter user) {
+    public ResponseEntity<Void> inviteUser(@PathVariable ObjectId id, @RequestBody @Valid UserDTO user) {
         classroomService.inviteUser(id, user);
 
         return status(201).build();
@@ -51,7 +50,7 @@ public class ClassroomController {
 
     @GetMapping("/{id}/participants")
     @Authorized
-    public ResponseEntity<List<UserAdapter>> getClassroomParticipants(@PathVariable ObjectId id) {
+    public ResponseEntity<List<UserDTO>> getClassroomParticipants(@PathVariable ObjectId id) {
         return status(200).body(classroomService.getClassroomParticipants(id));
     }
     @GetMapping("/{id}/classworks")

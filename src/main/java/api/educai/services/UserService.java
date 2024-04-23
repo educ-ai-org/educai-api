@@ -1,14 +1,13 @@
 package api.educai.services;
 
-import api.educai.adapters.StudentClassroomsAdapter;
-import api.educai.adapters.TeacherClassroomsAdapter;
-import api.educai.adapters.UserAdapter;
-import api.educai.adapters.ClassroomInfoAdapter;
+import api.educai.dto.StudentClassroomsDTO;
+import api.educai.dto.TeacherClassroomsDTO;
+import api.educai.dto.UserDTO;
+import api.educai.dto.ClassroomInfoDTO;
 import api.educai.dto.AuthDTO;
 import api.educai.dto.LoginDTO;
 import api.educai.dto.PatchUserEmailAndName;
 import api.educai.dto.TokenDTO;
-import api.educai.entities.Answer;
 import api.educai.entities.User;
 import api.educai.enums.Role;
 import api.educai.repositories.UserRespository;
@@ -29,20 +28,20 @@ public class UserService {
     private Token token = new Token();
     private RefreshToken refreshToken = new RefreshToken();
 
-    public UserAdapter createUser(User user) {
+    public UserDTO createUser(User user) {
         validateUserEmail(user.getEmail());
 
         user.encryptPassword();
 
-        return new UserAdapter(userRespository.save(user));
+        return new UserDTO(userRespository.save(user));
     }
 
-    public List<UserAdapter> getUsers() {
+    public List<UserDTO> getUsers() {
         List<User> users = userRespository.findAll();
         if (users.isEmpty()) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(204), "No users found!");
         }
-        return users.stream().map(UserAdapter::new).toList();
+        return users.stream().map(UserDTO::new).toList();
     }
 
     public AuthDTO autUser(LoginDTO loginDTO) {
@@ -72,7 +71,7 @@ public class UserService {
         userRespository.deleteById(new ObjectId(id));
     }
 
-    public UserAdapter updateUserData(ObjectId id, PatchUserEmailAndName patchUserEmailAndName) {
+    public UserDTO updateUserData(ObjectId id, PatchUserEmailAndName patchUserEmailAndName) {
         validateUserId(id);
 
         User user = getUserById(id);
@@ -82,7 +81,7 @@ public class UserService {
 
         userRespository.updateEmailAndName(id, patchUserEmailAndName.getName(), patchUserEmailAndName.getEmail());
 
-        return new UserAdapter(userRespository.findById(id));
+        return new UserDTO(userRespository.findById(id));
     }
 
     public void addClassroom(ObjectId id, ObjectId classroomId) {
@@ -91,18 +90,18 @@ public class UserService {
         userRespository.addClassroom(id, classroomId);
     }
 
-    public List<? extends ClassroomInfoAdapter> getUserClassrooms(ObjectId id) {
+    public List<? extends ClassroomInfoDTO> getUserClassrooms(ObjectId id) {
         User user = getUserById(id);
 
         if(user.getRole().equals(Role.TEACHER)) {
             return user.getClassrooms().stream().map(classroom -> {
                 int classroomStudentsCount = (int) classroom.getParticipants().stream().filter(student -> student.getRole().equals(Role.STUDENT)).count();
 
-                return new TeacherClassroomsAdapter(classroom, classroomStudentsCount);
+                return new TeacherClassroomsDTO(classroom, classroomStudentsCount);
             }).toList();
         } else {
             //TODO -> Retornar as atividades pendentes caso seja um estudante
-            return user.getClassrooms().stream().map(classroom -> new StudentClassroomsAdapter(classroom, 3)).toList();
+            return user.getClassrooms().stream().map(classroom -> new StudentClassroomsDTO(classroom, 3)).toList();
         }
     }
 
