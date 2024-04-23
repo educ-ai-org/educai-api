@@ -18,6 +18,8 @@ public class PostService {
     private PostRepository postRepository;
     @Autowired
     private ClassroomRepository classroomRepository;
+    @Autowired
+    private ClassroomService classroomService;
 
     public Post createPost(Post post, String classroomId) {
         Classroom classroom = classroomRepository.findById(new ObjectId(classroomId));

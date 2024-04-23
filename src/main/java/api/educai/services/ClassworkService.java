@@ -50,10 +50,16 @@ public class ClassworkService {
 
 
     public void addQuestions(List<Question> questions) {
+        if (questions.isEmpty()) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "No questions to save");
+        }
         questionService.addQuestions(questions);
     }
 
     public void addOptions(List<Option> options) {
+        if (options.isEmpty()) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "No options to save");
+        }
         questionService.addOptions(options);
     }
 
@@ -73,7 +79,7 @@ public class ClassworkService {
         Classwork classwork = classworkRepository.findById(id);
 
         if(classwork == null) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Invalid Token");
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Classwork not found!");
         }
 
         return classwork;
