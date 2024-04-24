@@ -1,9 +1,7 @@
 package api.educai.services;
 
-import api.educai.adapters.UserAdapter;
 import api.educai.entities.Classroom;
 import api.educai.entities.Post;
-import api.educai.entities.User;
 import api.educai.repositories.ClassroomRepository;
 import api.educai.repositories.PostRepository;
 import org.bson.types.ObjectId;
@@ -20,6 +18,8 @@ public class PostService {
     private PostRepository postRepository;
     @Autowired
     private ClassroomRepository classroomRepository;
+    @Autowired
+    private ClassroomService classroomService;
 
     public Post createPost(Post post, String classroomId) {
         Classroom classroom = classroomRepository.findById(new ObjectId(classroomId));

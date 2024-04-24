@@ -26,20 +26,16 @@ import static org.springframework.http.ResponseEntity.status;
 public class ClassworkController {
     @Autowired
     private ClassworkService classworkService;
+
     @PostMapping
     @Authorized
     @Secured("ROLE_TEACHER")
     public ResponseEntity<Classwork> createClasswork(
             @RequestBody @Valid Classwork classwork,
             @RequestHeader ObjectId classroomId,
-            HttpServletRequest request)
-    {
+            HttpServletRequest request) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
-        try {
-            return status(201).body(classworkService.createClasswork(classwork, classroomId, userId));
-        } catch (ResponseStatusException e) {
-            return status(404).build();
-        }
+        return status(201).body(classworkService.createClasswork(classwork, classroomId, userId));
     }
 
     @PostMapping("/answer")
