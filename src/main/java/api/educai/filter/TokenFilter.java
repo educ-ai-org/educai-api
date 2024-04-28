@@ -1,6 +1,6 @@
-package api.educai.middlewares;
+package api.educai.filter;
 
-import api.educai.entities.User;
+import api.educai.dto.UserDetailsDTO;
 import api.educai.enums.Role;
 import api.educai.repositories.UserRespository;
 import api.educai.utils.token.Token;
@@ -27,16 +27,10 @@ public class TokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getMethod().equals("OPTIONS")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null || authorization.isBlank()) {
-            response.setStatus(401);
-            response.getWriter().write("Token is not present in header 'Authorization'.");
+            filterChain.doFilter(request, response);
             return;
         }
 
@@ -45,10 +39,15 @@ public class TokenFilter extends OncePerRequestFilter {
         ObjectId userId = token.getUserIdByToken(requestToken);
         Role userRole = token.getUserRoleByToken(requestToken);
 
+        if(this.token.isTokenBlacklisted(userId, requestToken)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         request.setAttribute("userId", userId);
         request.setAttribute("userRole", userRole);
 
-        User user = userRepository.findById(userId);
+        UserDetailsDTO user = new UserDetailsDTO(userRepository.findById(userId));
 
         var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);

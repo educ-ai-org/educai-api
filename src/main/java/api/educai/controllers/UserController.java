@@ -58,7 +58,6 @@ public class UserController {
     }
 
     @PatchMapping
-    @Authorized
     public ResponseEntity<UserDTO> updateUserData(HttpServletRequest request, @RequestBody @Valid PatchUserEmailAndName patchUserEmailAndName) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 
@@ -73,7 +72,6 @@ public class UserController {
     }
 
     @GetMapping("/classrooms")
-    @Authorized
     public ResponseEntity<List<? extends ClassroomInfoDTO>> getUserClassrooms(HttpServletRequest request) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 
@@ -87,13 +85,21 @@ public class UserController {
     }
 
     @PostMapping("/logoff")
-    public ResponseEntity<Void> logoff(HttpServletRequest request, @CookieValue(name = "refreshToken") @NotBlank String refreshToken) {
+    public ResponseEntity<Void> logoff(
+            HttpServletRequest request,
+            @CookieValue(name = "refreshToken") @NotBlank String refreshToken,
+            HttpServletResponse response
+    ) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
 
         String authorization = request.getHeader("Authorization");
         String requestToken = authorization.replace("Bearer ", "");
 
         userService.logoff(userId, refreshToken, requestToken);
+
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
 
         return status(200).build();
     }

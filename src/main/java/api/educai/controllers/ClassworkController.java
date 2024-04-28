@@ -27,9 +27,8 @@ public class ClassworkController {
     @Autowired
     private ClassworkService classworkService;
 
-    @PostMapping
-    @Authorized
     @Secured("ROLE_TEACHER")
+    @PostMapping
     public ResponseEntity<Classwork> createClasswork(
             @RequestBody @Valid Classwork classwork,
             @RequestHeader ObjectId classroomId,
@@ -38,6 +37,7 @@ public class ClassworkController {
         return status(201).body(classworkService.createClasswork(classwork, classroomId, userId));
     }
 
+    @Secured("ROLE_STUDENT")
     @PostMapping("/answer")
     public ResponseEntity<Void> addAnswer(
             @RequestBody Answer answer,
@@ -54,9 +54,8 @@ public class ClassworkController {
         return status(200).body(classwork);
     }
 
+    @Secured("ROLE_TEACHER")
     @GetMapping("/{id}/answers")
-    @Authorized
-    @Teacher
     public ResponseEntity<List<AnswerDTO>> getAnswers(@PathVariable ObjectId id) {
         List<AnswerDTO> answers = classworkService.getAnswers(id);
         return answers.isEmpty() ? status(204).build() : status(200).body(answers);

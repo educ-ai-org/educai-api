@@ -1,12 +1,12 @@
 package api.educai.security;
 
-import api.educai.middlewares.TokenFilter;
+import api.educai.filter.TokenFilter;
+import api.educai.services.AuthenticationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,15 +19,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
+@EnableWebSecurity(debug = true)
+@EnableMethodSecurity(securedEnabled = true, prePostEnabled = false)
 public class SecurityConfig {
+    @Autowired
+    TokenFilter tokenFilter;
+    @Autowired
+    AuthenticationService authenticationService;
+    @Autowired
+    CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
     private static final AntPathRequestMatcher[] PERMITTED_URLs = {
             new AntPathRequestMatcher("/swagger-ui/**"),
-            new AntPathRequestMatcher("user/auth"),
-            new AntPathRequestMatcher("user/refreshToken"),
-            new AntPathRequestMatcher("user", "GET"),
-            new AntPathRequestMatcher("user", "POST"),
+            new AntPathRequestMatcher("/v3/api-docs/**"),
+            new AntPathRequestMatcher("/user/refreshToken"),
+            new AntPathRequestMatcher("/error"),
+            new AntPathRequestMatcher("/user", "GET"),
+            new AntPathRequestMatcher("/user", "POST"),
+            new AntPathRequestMatcher("/user/auth", "POST")
     };
 
     @Bean
@@ -36,19 +45,19 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorized -> authorized
-                        .requestMatchers(PERMITTED_URLs)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
+                .authorizeHttpRequests(authorize ->
+                        authorize.requestMatchers(PERMITTED_URLs)
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
                 )
-                .addFilterBefore(new TokenFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager() throws Exception {
+        return new AuthenticationProvider(authenticationService, passwordEncoder());
     }
 
     @Bean

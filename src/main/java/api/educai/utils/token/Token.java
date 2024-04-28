@@ -1,5 +1,6 @@
 package api.educai.utils.token;
 
+import api.educai.dto.UserDetailsDTO;
 import api.educai.entities.TokenBlacklist;
 import api.educai.entities.User;
 import api.educai.enums.Role;
@@ -25,7 +26,8 @@ public class Token implements IToken{
     @Autowired
     private TokenBlacklistRepository tokenBlacklistRepository;
 
-    public String getToken(User user) {
+    @Override
+    public String getToken(UserDetailsDTO user) {
         try {
             long exp = System.currentTimeMillis() + (15 * 60 * 1000); //Expires in 15 minutes
 
@@ -40,6 +42,7 @@ public class Token implements IToken{
         }
     }
 
+    @Override
     public ObjectId getUserIdByToken(String token) {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(tokenSecretKey)).build();
         DecodedJWT decodedJWT = verifier.verify(token);
@@ -62,6 +65,7 @@ public class Token implements IToken{
         return Role.valueOf(decodedJWT.getClaims().get("role").asString());
     }
 
+    @Override
     public boolean isTokenBlacklisted(ObjectId userId, String token) {
         Optional<TokenBlacklist> tokenBlacklist = tokenBlacklistRepository.findById(userId);
 

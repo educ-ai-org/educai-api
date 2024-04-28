@@ -1,25 +1,31 @@
 package api.educai.utils.token;
 
-import api.educai.entities.User;
+import api.educai.dto.UserDetailsDTO;
+import api.educai.entities.TokenBlacklist;
+import api.educai.repositories.TokenBlacklistRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class RefreshToken implements IToken {
     @Value("${jwt.refreshToken.secret}")
     private String refreshSecretKey;
 
+    @Autowired
+    private TokenBlacklistRepository tokenBlacklistRepository;
+
     @Override
-    public String getToken(User user) {
+    public String getToken(UserDetailsDTO user) {
         try {
             long exp = System.currentTimeMillis() + (15 * 24 * 60 * 60 * 1000); //Expires in 15 days
 
@@ -48,5 +54,16 @@ public class RefreshToken implements IToken {
         DecodedJWT decodedJWT = verifier.verify(token);
 
         return decodedJWT.getExpiresAt();
+    }
+
+    @Override
+    public boolean isTokenBlacklisted(ObjectId userId, String token) {
+        Optional<TokenBlacklist> tokenBlacklist = tokenBlacklistRepository.findById(userId);
+
+        if(tokenBlacklist.isEmpty()) {
+            return false;
+        }
+
+        return tokenBlacklistRepository.existsByIdAndRefreshTokenListToken(userId, token);
     }
 }
