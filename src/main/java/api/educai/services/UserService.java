@@ -1,15 +1,14 @@
 package api.educai.services;
 
 import api.educai.dto.*;
-import api.educai.entities.Classroom;
 import api.educai.entities.Classwork;
 import api.educai.entities.TokenBlacklist;
 import api.educai.entities.User;
 import api.educai.enums.Role;
 import api.educai.repositories.TokenBlacklistRepository;
 import api.educai.repositories.UserRespository;
-import api.educai.utils.token.RefreshToken;
-import api.educai.utils.token.Token;
+import api.educai.services.token.RefreshToken;
+import api.educai.services.token.Token;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;

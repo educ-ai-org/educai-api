@@ -26,8 +26,6 @@ public class SecurityConfig {
     TokenFilter tokenFilter;
     @Autowired
     AuthenticationService authenticationService;
-    @Autowired
-    CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     private static final AntPathRequestMatcher[] PERMITTED_URLs = {
             new AntPathRequestMatcher("/swagger-ui/**"),

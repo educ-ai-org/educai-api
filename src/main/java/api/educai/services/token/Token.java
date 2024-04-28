@@ -1,7 +1,8 @@
-package api.educai.utils.token;
+package api.educai.services.token;
 
 import api.educai.dto.UserDetailsDTO;
 import api.educai.entities.TokenBlacklist;
+import api.educai.enums.Role;
 import api.educai.repositories.TokenBlacklistRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -13,47 +14,56 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
 @Service
-public class RefreshToken implements IToken {
-    @Value("${jwt.refreshToken.secret}")
-    private String refreshSecretKey;
-
+public class Token implements IToken{
+    @Value("${jwt.token.secret}")
+    private String tokenSecretKey;
     @Autowired
     private TokenBlacklistRepository tokenBlacklistRepository;
 
     @Override
     public String getToken(UserDetailsDTO user) {
         try {
-            long exp = System.currentTimeMillis() + (15 * 24 * 60 * 60 * 1000); //Expires in 15 days
+            Instant exp = LocalDateTime.now().plusMinutes(15).toInstant(ZoneOffset.of("-03:00")); //Expires in 15 minutes
 
             return JWT.create()
-                    .withClaim("exp", exp)
+                    .withIssuer("educ.ai-api")
                     .withClaim("id", user.getId().toString())
-                    .sign(Algorithm.HMAC256(refreshSecretKey));
-        } catch(JWTCreationException ex) {
-            throw new RuntimeException("Error while generating refresh token");
+                    .withClaim("role", user.getRole().toString())
+                    .withExpiresAt(exp)
+                    .sign(Algorithm.HMAC256(tokenSecretKey));
+        } catch (JWTCreationException ex) {
+            throw new RuntimeException("Error while generating access token");
         }
     }
 
     @Override
     public ObjectId getUserIdByToken(String token) {
-        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(refreshSecretKey)).build();
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(tokenSecretKey)).build();
         DecodedJWT decodedJWT = verifier.verify(token);
 
-        ObjectId userId = new ObjectId(decodedJWT.getClaims().get("id").asString());
-
-        return userId;
+        return new ObjectId(decodedJWT.getClaims().get("id").asString());
     }
 
     @Override
     public Date getTokenExpirationTime(String token) {
-        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(refreshSecretKey)).build();
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(tokenSecretKey)).build();
         DecodedJWT decodedJWT = verifier.verify(token);
 
         return decodedJWT.getExpiresAt();
+    }
+
+    public Role getUserRoleByToken(String token) {
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(tokenSecretKey)).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+
+        return Role.valueOf(decodedJWT.getClaims().get("role").asString());
     }
 
     @Override
@@ -64,6 +74,6 @@ public class RefreshToken implements IToken {
             return false;
         }
 
-        return tokenBlacklistRepository.existsByIdAndRefreshTokenListToken(userId, token);
+        return tokenBlacklistRepository.existsByIdAndAccessTokenListToken(userId, token);
     }
 }

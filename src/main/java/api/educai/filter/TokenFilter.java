@@ -3,7 +3,7 @@ package api.educai.filter;
 import api.educai.dto.UserDetailsDTO;
 import api.educai.enums.Role;
 import api.educai.repositories.UserRespository;
-import api.educai.utils.token.Token;
+import api.educai.services.token.Token;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

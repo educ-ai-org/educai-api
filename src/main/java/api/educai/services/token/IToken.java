@@ -1,4 +1,4 @@
-package api.educai.utils.token;
+package api.educai.services.token;
 
 import api.educai.dto.UserDetailsDTO;
 import api.educai.entities.User;
