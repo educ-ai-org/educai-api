@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 public class StudentClassroomsDTO extends ClassroomInfoDTO {
-    private int pendingTasks = 0;
+    private String nextSubmission = "";
 
-    public StudentClassroomsDTO(Classroom classroom, int pendingTasks) {
+    public StudentClassroomsDTO(Classroom classroom, String nextSubmission) {
         super(classroom);
-        this.pendingTasks = pendingTasks;
+        this.nextSubmission = nextSubmission;
     }
 
 }

@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -26,9 +27,8 @@ public class ClassworkController {
     @Autowired
     private ClassworkService classworkService;
 
+    @Secured("ROLE_TEACHER")
     @PostMapping
-    @Authorized
-    @Teacher
     public ResponseEntity<Classwork> createClasswork(
             @RequestBody @Valid Classwork classwork,
             @RequestHeader ObjectId classroomId,
@@ -37,6 +37,7 @@ public class ClassworkController {
         return status(201).body(classworkService.createClasswork(classwork, classroomId, userId));
     }
 
+    @Secured("ROLE_STUDENT")
     @PostMapping("/answer")
     public ResponseEntity<Void> addAnswer(
             @RequestBody Answer answer,
@@ -53,9 +54,8 @@ public class ClassworkController {
         return status(200).body(classwork);
     }
 
+    @Secured("ROLE_TEACHER")
     @GetMapping("/{id}/answers")
-    @Authorized
-    @Teacher
     public ResponseEntity<List<AnswerDTO>> getAnswers(@PathVariable ObjectId id) {
         List<AnswerDTO> answers = classworkService.getAnswers(id);
         return answers.isEmpty() ? status(204).build() : status(200).body(answers);

@@ -7,9 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,8 +18,6 @@ import java.util.List;
 @Data
 @Document
 public class User {
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Id
     private ObjectId id;
     @NotBlank
@@ -46,16 +42,12 @@ public class User {
         this.score = 0;
     }
 
+    public void encodePassword() {
+        this.password = new BCryptPasswordEncoder().encode(password);
+    }
+
     public void incrementScore(Integer score) {
         this.score += score;
-    }
-
-    public void encryptPassword() {
-        password = passwordEncoder.encode(password);
-    }
-
-    public boolean passwordIsValid(String password) {
-        return passwordEncoder.matches(password, this.password);
     }
 
     public boolean isUserEnrolledInClassroom(ObjectId classroomId) {
