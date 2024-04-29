@@ -1,12 +1,8 @@
 package api.educai.dto;
 
 import api.educai.entities.Answer;
-import api.educai.entities.Classwork;
-import api.educai.entities.User;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDate;
 import java.util.List;

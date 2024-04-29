@@ -12,5 +12,4 @@ public class QuestionAnswerDTO {
     private String optionKey;
     @NotNull
     private ObjectId questionId;
-
 }
