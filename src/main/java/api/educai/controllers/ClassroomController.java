@@ -5,7 +5,6 @@ import api.educai.dto.UserDTO;
 import api.educai.dto.ClassworkDTO;
 import api.educai.entities.Classroom;
 import api.educai.services.ClassroomService;
-import api.educai.utils.annotations.Authorized;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;

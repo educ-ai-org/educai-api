@@ -2,9 +2,7 @@ package api.educai.controllers;
 
 import api.educai.entities.Post;
 import api.educai.services.PostService;
-import api.educai.utils.annotations.Authorized;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
