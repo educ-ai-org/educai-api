@@ -1,6 +1,5 @@
 package api.educai.dto;
 
-import api.educai.dto.ClassroomInfoDTO;
 import api.educai.entities.Classroom;
 import lombok.Getter;
 

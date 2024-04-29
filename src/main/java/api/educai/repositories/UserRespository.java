@@ -1,6 +1,5 @@
 package api.educai.repositories;
 
-import api.educai.entities.Classroom;
 import api.educai.entities.User;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;

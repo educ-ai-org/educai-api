@@ -8,7 +8,6 @@ import api.educai.dto.PatchUserEmailAndName;
 import api.educai.dto.TokenDTO;
 import api.educai.entities.User;
 import api.educai.services.UserService;
-import api.educai.utils.annotations.Authorized;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

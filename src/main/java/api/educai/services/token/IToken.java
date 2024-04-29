@@ -1,7 +1,6 @@
 package api.educai.services.token;
 
 import api.educai.dto.UserDetailsDTO;
-import api.educai.entities.User;
 import org.bson.types.ObjectId;
 
 import java.util.Date;

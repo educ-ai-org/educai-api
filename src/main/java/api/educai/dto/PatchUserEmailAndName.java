@@ -3,7 +3,9 @@ package api.educai.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
 
+@Getter
 public class PatchUserEmailAndName {
     @NotBlank
     @Size(max = 100)
@@ -11,12 +13,4 @@ public class PatchUserEmailAndName {
     @NotBlank
     @Email
     private String email;
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
 }
