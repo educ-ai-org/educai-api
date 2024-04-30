@@ -33,7 +33,6 @@ public class EmailService {
         if (response.statusCode() == 200 || response.statusCode() == 201) {
             status(200).build();
         } else {
-            System.out.println(response);
             throw new ResponseStatusException(HttpStatusCode.valueOf(500), "User registered, but email could not be sent");
         }
     }
