@@ -18,6 +18,7 @@ public class GetWordDefinitionDTO {
         private String text;
         private String audio;
         private String sourceUrl;
+        private License license;
     }
 
     @Getter
@@ -25,6 +26,7 @@ public class GetWordDefinitionDTO {
         private String definition;
         private List<String> synonyms;
         private List<String> antonyms;
+        private String example;
     }
 
     @Getter
@@ -33,6 +35,7 @@ public class GetWordDefinitionDTO {
         private List<Definition> definitions;
         private List<String> synonyms;
         private List<String> antonyms;
+        private String example;
     }
 
     @Getter

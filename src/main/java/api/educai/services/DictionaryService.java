@@ -42,8 +42,8 @@ public class DictionaryService {
             }
         });
 
-//        wordDefinitionDTO.sortMeanings();
-//        wordDefinitionDTO.sortDefinitions();
+        wordDefinitionDTO.sortMeanings();
+        wordDefinitionDTO.sortDefinitions();
 
         return wordDefinitionDTO;
     }
@@ -58,7 +58,7 @@ public class DictionaryService {
                 .build();
         try {
             HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
-            return new ObjectMapper().readValue(response.body(), new TypeReference<List<GetWordDefinitionDTO>>(){});
+            return new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
         } catch (IOException | InterruptedException e) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(500), "Error while fetching word definition");
         }

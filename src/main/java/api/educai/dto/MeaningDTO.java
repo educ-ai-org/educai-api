@@ -14,7 +14,7 @@ public class MeaningDTO {
         this.definitions = new ListObject<>(5);
     }
 
-    private static void mergeSortDefinitions(int startIndex, int endIndex, String[] definitions) {
+    private static void mergeSortDefinitions(int startIndex, int endIndex, ListObject<String> definitions) {
         if(startIndex < endIndex - 1) {
             int middleIndex = (startIndex + endIndex) / 2;
 
@@ -24,30 +24,30 @@ public class MeaningDTO {
         }
     }
 
-    private static void mergeDefinitions(int p, int q, int r, String[] definitions) {
+    private static void mergeDefinitions(int p, int q, int r, ListObject<String> definitions) {
         int i = p;
         int j = q;
         int k = 0;
         String[] w = new String[r - p];
 
         while (i < q && j < r) {
-            if (definitions[i].compareTo(definitions[j]) < 0) {
-                w[k++] = definitions[i++];
+            if (definitions.getElement(i).compareTo(definitions.getElement(j)) < 0) {
+                w[k++] = definitions.getElement(i++);
             } else {
-                w[k++] = definitions[j++];
+                w[k++] = definitions.getElement(j++);
             }
         }
 
         while (i < q) {
-            w[k++] = definitions[i++];
+            w[k++] = definitions.getElement(i++);;
         }
 
         while (j < r) {
-            w[k++] = definitions[j++];
+            w[k++] = definitions.getElement(j++);;
         }
 
         for (i = p; i < r; i++) {
-            definitions[i] = w[i - p];
+            definitions.addInIndex(w[i - p], i);
         }
     }
 
@@ -56,6 +56,6 @@ public class MeaningDTO {
     }
 
     public void sortDefinitions() {
-        mergeSortDefinitions(0, definitions.getSize(), definitions.getArray());
+        mergeSortDefinitions(0, definitions.getSize(), definitions);
     }
 }

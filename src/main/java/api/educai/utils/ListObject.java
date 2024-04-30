@@ -24,6 +24,12 @@ public class ListObject<T> {
         array[numElements++] = element;
     }
 
+    public void addInIndex(T element, int index) {
+        if(index < numElements && index > -1) {
+            array[index] = element;
+        }
+    }
+
     public int search(T searchedElement) {
         int index = -1;
 
