@@ -1,7 +1,11 @@
 package api.educai.utils;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 
+@JsonSerialize(using = ListObjectSerializer.class)
+@JsonDeserialize(using = ListObjectDeserializer.class)
 public class ListObject<T> {
     @Getter
     private T[] array;
@@ -55,6 +59,10 @@ public class ListObject<T> {
 
     public int getSize() {
         return numElements;
+    }
+
+    public int getLength() {
+        return array.length;
     }
 
     public T getElement(int index) {
