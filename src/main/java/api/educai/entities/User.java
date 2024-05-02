@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Document
@@ -53,4 +54,18 @@ public class User {
     public boolean isUserEnrolledInClassroom(ObjectId classroomId) {
         return classrooms.stream().anyMatch(classroom -> classroom.getId().equals(classroomId));
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return Objects.equals(id, user.id); // Comparar apenas os IDs para evitar recursão
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
 }
