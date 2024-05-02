@@ -1,13 +1,12 @@
 package api.educai.services;
 
-import api.educai.dto.ClassroomInfoDTO;
-import api.educai.dto.UserDTO;
-import api.educai.dto.AddStudentInClassroomDTO;
-import api.educai.dto.NewStudentEmailDTO;
-import api.educai.dto.ClassworkDTO;
+import api.educai.dto.*;
+import api.educai.entities.Answer;
 import api.educai.entities.Classroom;
 import api.educai.entities.User;
+import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
+import api.educai.utils.CSVGenerator;
 import api.educai.utils.PasswordGenerator;
 import api.educai.utils.email.EmailService;
 import org.bson.types.ObjectId;
@@ -17,12 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class ClassroomService {
     @Autowired
     private ClassroomRepository classroomRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @Autowired
     private UserService userService;
@@ -42,7 +44,7 @@ public class ClassroomService {
     }
 
     public void inviteUser(ObjectId id, UserDTO newUser) {
-        if(!userService.userEmailAlreadyExists(newUser.getEmail())) {
+        if (!userService.userEmailAlreadyExists(newUser.getEmail())) {
             String userPassword = PasswordGenerator.generate(8);
             User user = new User(newUser.getName(), newUser.getEmail(), userPassword, newUser.getRole());
             Classroom classroom = getClassroomById(id);
@@ -65,7 +67,7 @@ public class ClassroomService {
             User user = userService.getUserByEmail(newUser.getEmail());
             Classroom classroom = getClassroomById(id);
 
-            if(user.isUserEnrolledInClassroom(id)) {
+            if (user.isUserEnrolledInClassroom(id)) {
                 throw new ResponseStatusException(HttpStatusCode.valueOf(409), "This user is already registered in this classroom");
             }
 
@@ -93,7 +95,7 @@ public class ClassroomService {
     public Classroom getClassroomById(ObjectId id) {
         Classroom classroom = classroomRepository.findById(id);
 
-        if(classroom == null) {
+        if (classroom == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Classroom not found!");
         }
 
@@ -105,9 +107,25 @@ public class ClassroomService {
         classroomRepository.save(classroom);
         userService.addClassroom(user.getId(), classroom.getId());
     }
+
     public List<ClassworkDTO> getClassworks(ObjectId id) {
         Classroom classroom = getClassroomById(id);
         return classroom.getClassworks().stream().map(ClassworkDTO::new).toList();
     }
+
+    public ReportDTO getUserReport(ObjectId classroomId, ObjectId userId) {
+        User user = userService.getUserById(userId);
+        Classroom classroom = getClassroomById(classroomId);
+
+        List<Answer> userAnswers = classroom.getClassworks().stream()
+                .flatMap(classwork -> classwork.getAnswers().stream())
+                .filter(answer -> answer.getUser().equals(user))
+                .toList();
+
+        String fileName = user.getName().toUpperCase() + "-" + LocalDate.now() + ".csv";
+        return new ReportDTO(CSVGenerator.generateClassworksReport(user, classroom, userAnswers), fileName);
+
+    }
+
 
 }

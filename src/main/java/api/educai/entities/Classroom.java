@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Document
@@ -35,4 +36,17 @@ public class Classroom {
     public void addClasswork(Classwork classwork) { classworks.add(classwork); }
 
     public void addPost(Post post) { posts.add(post); }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Classroom classroom = (Classroom) obj;
+        return Objects.equals(id, classroom.id); // Comparar apenas os IDs para evitar recursão
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
