@@ -28,7 +28,7 @@ public class AuthenticationProvider implements AuthenticationManager {
         if(this.passwordEncoder.matches(password, userDetails.getPassword())) {
             return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         } else {
-            throw new BadCredentialsException("E-mail or password invalids!");
+            throw new BadCredentialsException("Invalid e-mail or password!");
         }
     }
 }
