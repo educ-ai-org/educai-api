@@ -36,6 +36,7 @@ public class Token implements IToken{
                     .withIssuer("educ.ai-api")
                     .withClaim("id", user.getId().toString())
                     .withClaim("role", user.getRole().toString())
+                    .withClaim("username", user.getName())
                     .withExpiresAt(exp)
                     .sign(Algorithm.HMAC256(tokenSecretKey));
         } catch (JWTCreationException ex) {

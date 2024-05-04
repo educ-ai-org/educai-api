@@ -9,8 +9,7 @@ import org.springframework.data.annotation.Id;
 
 @Getter
 public class ClassroomInfoDTO {
-    @Id
-    private ObjectId id;
+    private String id;
     @NotBlank
     @Size(max = 100)
     private String title;
@@ -19,7 +18,7 @@ public class ClassroomInfoDTO {
     private String course;
 
     public ClassroomInfoDTO(Classroom classroom) {
-        this.id = classroom.getId();
+        this.id = classroom.getId().toString();
         this.title = classroom.getTitle();
         this.course = classroom.getCourse();
     }
