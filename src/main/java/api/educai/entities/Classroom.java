@@ -27,6 +27,7 @@ public class Classroom {
     private List<User> participants = new ArrayList<>();
     @DocumentReference
     private List<Classwork> classworks = new ArrayList<>();
+    @DocumentReference
     private List<Post> posts = new ArrayList<>();
 
     public void addParticipant(User user) {

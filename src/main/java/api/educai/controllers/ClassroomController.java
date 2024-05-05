@@ -5,7 +5,9 @@ import api.educai.dto.ReportDTO;
 import api.educai.dto.UserDTO;
 import api.educai.dto.ClassworkDTO;
 import api.educai.entities.Classroom;
+import api.educai.entities.Post;
 import api.educai.services.ClassroomService;
+import api.educai.services.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
@@ -58,6 +60,12 @@ public class ClassroomController {
     public ResponseEntity<List<ClassworkDTO>> getClassworksByClassroom(@PathVariable ObjectId id) {
         List<ClassworkDTO> classworks = classroomService.getClassworks(id);
         return classworks.isEmpty() ? status(204).build() : status(200).body(classworks);
+    }
+
+    @GetMapping("/{id}/posts")
+    public ResponseEntity<List<Post>> getPostsByClassroom(@PathVariable ObjectId id){
+        List<Post> posts = classroomService.getPostsByClassroom(id);
+        return posts.isEmpty() ? status(204).build() : status(200).body(posts);
     }
 
     @GetMapping(value = "/{classroomId}/report", produces = "text/csv")

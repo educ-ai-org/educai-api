@@ -3,6 +3,7 @@ package api.educai.services;
 import api.educai.dto.*;
 import api.educai.entities.Answer;
 import api.educai.entities.Classroom;
+import api.educai.entities.Post;
 import api.educai.entities.User;
 import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
@@ -127,5 +128,9 @@ public class ClassroomService {
 
     }
 
+    public List<Post> getPostsByClassroom(ObjectId classroomId) {
+        Classroom classroom = classroomRepository.findById(classroomId);
+        return classroom.getPosts();
+    }
 
 }
