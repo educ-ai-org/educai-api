@@ -1,5 +1,6 @@
 package api.educai.controllers;
 
+import api.educai.dto.PostDTO;
 import api.educai.entities.Post;
 import api.educai.services.PostService;
 import jakarta.validation.Valid;
@@ -12,15 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("post")
+@RequestMapping("/posts")
 public class PostController {
     @Autowired
     private PostService postService;
 
     @Secured("ROLE_TEACHER")
     @PostMapping
-    public ResponseEntity<Post> createPost(@Valid @RequestBody Post post, @RequestHeader("classroom-id") String classroomId){
-        post.setId(new ObjectId());
+    public ResponseEntity<Post> createPost(@RequestBody @Valid PostDTO post, @RequestHeader String classroomId){
         return ResponseEntity.status(201).body(postService.createPost(post,classroomId));
     }
 
@@ -35,9 +35,9 @@ public class PostController {
     }
 
     @Secured("ROLE_TEACHER")
-    @PatchMapping("/{id}/{titulo}")
-    public  ResponseEntity<Post> updateTituloPost(@PathVariable String id, @PathVariable String titulo){
-        return ResponseEntity.status(200).body(postService.updatePost(id, titulo));
+    @PatchMapping("/{id}")
+    public  ResponseEntity<Post> updateTituloPost(@PathVariable ObjectId id, @RequestBody @Valid PostDTO updatedPost){
+        return ResponseEntity.status(200).body(postService.updatePost(id, updatedPost));
     }
 
     @Secured("ROLE_TEACHER")

@@ -1,10 +1,12 @@
 package api.educai.services;
 
+import api.educai.dto.PostDTO;
 import api.educai.entities.Classroom;
 import api.educai.entities.Post;
 import api.educai.repositories.ClassroomRepository;
 import api.educai.repositories.PostRepository;
 import org.bson.types.ObjectId;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -19,15 +21,17 @@ public class PostService {
     @Autowired
     private ClassroomRepository classroomRepository;
     @Autowired
-    private ClassroomService classroomService;
+    private ModelMapper mapper;
 
-    public Post createPost(Post post, String classroomId) {
+    public Post createPost(PostDTO newPost, String classroomId) {
         Classroom classroom = classroomRepository.findById(new ObjectId(classroomId));
+        Post post = mapper.map(newPost, Post.class);
+        postRepository.save(post);
+
         classroom.addPost(post);
         classroomRepository.save(classroom);
 
-        Post postSalvo = postRepository.save(post);
-        return postSalvo;
+        return post;
     }
 
     public List<Post> getPosts() {
@@ -47,11 +51,13 @@ public class PostService {
         return post;
     }
 
-    public Post updatePost(String id, String titulo){
-        ObjectId idPost = new ObjectId(id);
-        postRepository.updateTitle(idPost, titulo);
+    public Post updatePost(ObjectId id, PostDTO updatedPost){
 
-        Post post = postRepository.findById(idPost);
+        Post post = postRepository.findById(id);
+        post.setTitle(updatedPost.getTitle());
+        post.setDescription(updatedPost.getDescription());
+        postRepository.save(post);
+
         return post;
     }
 
