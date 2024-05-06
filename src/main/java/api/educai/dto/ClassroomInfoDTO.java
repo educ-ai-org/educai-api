@@ -4,8 +4,6 @@ import api.educai.entities.Classroom;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
 
 @Getter
 public class ClassroomInfoDTO {

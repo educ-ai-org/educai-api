@@ -133,4 +133,35 @@ public class ClassroomService {
         return classroom.getPosts();
     }
 
+    public void deleteClassroom(ObjectId id, ObjectId userId) {
+        Classroom classroom = getClassroomById(id);
+        User user = userService.getUserById(userId);
+
+        if (classroom.getParticipants().stream().noneMatch(participant -> participant.equals(user))) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(403), "You are not the teacher of this classroom");
+        }
+
+        classroomRepository.delete(classroom);
+    }
+
+    public ClassroomInfoDTO updateClassroom(ObjectId id, PatchClassroomTitleAndCourse patchClassroomTitleAndCourse, ObjectId userId) {
+        Classroom classroom = getClassroomById(id);
+        User user = userService.getUserById(userId);
+
+        if (classroom.getParticipants().stream().noneMatch(participant -> participant.equals(user))) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(403), "You are not the teacher of this classroom");
+        }
+
+        if(patchClassroomTitleAndCourse.getTitle() != null) {
+            classroom.setTitle(patchClassroomTitleAndCourse.getTitle());
+        }
+
+        if(patchClassroomTitleAndCourse.getCourse() != null) {
+            classroom.setCourse(patchClassroomTitleAndCourse.getCourse());
+        }
+
+        classroomRepository.save(classroom);
+
+        return new ClassroomInfoDTO(classroom);
+    }
 }
