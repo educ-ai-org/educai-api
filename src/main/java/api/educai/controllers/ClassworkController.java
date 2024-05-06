@@ -8,6 +8,7 @@ import api.educai.services.ClassworkService;
 import api.educai.services.UserService;
 import api.educai.utils.annotations.Authorized;
 import api.educai.utils.annotations.Teacher;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
@@ -22,6 +23,7 @@ import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @RequestMapping("classwork")
+@Tag(name = "Atividades", description = "API para serviços relacionados a atividades.")
 public class ClassworkController {
     @Autowired
     private ClassworkService classworkService;

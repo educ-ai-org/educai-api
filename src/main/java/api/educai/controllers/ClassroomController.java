@@ -7,6 +7,7 @@ import api.educai.entities.Classroom;
 import api.educai.services.ClassroomService;
 import api.educai.utils.annotations.Authorized;
 import api.educai.utils.annotations.Teacher;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
@@ -20,6 +21,7 @@ import static org.springframework.http.ResponseEntity.*;
 
 @RestController
 @RequestMapping("classroom")
+@Tag(name = "Sala de aula", description = "API para serviços relacionados a salas de aula.")
 public class ClassroomController {
     @Autowired
     private ClassroomService classroomService;
