@@ -1,9 +1,6 @@
 package api.educai.controllers;
 
-import api.educai.dto.ClassroomInfoDTO;
-import api.educai.dto.ReportDTO;
-import api.educai.dto.UserDTO;
-import api.educai.dto.ClassworkDTO;
+import api.educai.dto.*;
 import api.educai.entities.Classroom;
 import api.educai.entities.Post;
 import api.educai.services.ClassroomService;
@@ -13,10 +10,12 @@ import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
@@ -82,4 +81,24 @@ public class ClassroomController {
                 .body(reportBytes);
     }
 
+    @DeleteMapping("/{id}")
+    @Secured("ROLE_TEACHER")
+    public ResponseEntity<Void> deleteClassroom(@PathVariable ObjectId id, HttpServletRequest request) {
+        ObjectId userId = (ObjectId) request.getAttribute("userId");
+        classroomService.deleteClassroom(id, userId);
+
+        return status(204).build();
+    }
+
+    @PatchMapping("/{id}")
+    @Secured("ROLE_TEACHER")
+    public ResponseEntity<ClassroomInfoDTO> updateClassroom(@PathVariable ObjectId id, @RequestBody @Valid PatchClassroomTitleAndCourse classroom, HttpServletRequest request) {
+        ObjectId userId = (ObjectId) request.getAttribute("userId");
+
+        if (classroom == null || (classroom.getTitle() == null && classroom.getCourse() == null)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Title and Course cannot both be null");
+        }
+
+        return status(200).body(classroomService.updateClassroom(id, classroom, userId));
+    }
 }
