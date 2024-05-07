@@ -111,10 +111,7 @@ public class UserService {
             }).toList();
         } else {
             return user.getClassrooms().stream().map(classroom -> {
-                String nextSubmission = classroom.getClassworks().stream()
-                        .min(Comparator.comparing(Classwork::getEndDate))
-                        .map(Classwork::getTitle)
-                        .orElse("-");
+                String nextSubmission = classroom.getClassworks().stream().min(Comparator.comparing(Classwork::getEndDate)).get().getTitle();
 
                 return new StudentClassroomsDTO(classroom, nextSubmission);
             }).toList();
