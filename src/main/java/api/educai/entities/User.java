@@ -5,21 +5,20 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+@Data
 @Document
 public class User {
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Id
     private ObjectId id;
     @NotBlank
@@ -34,51 +33,39 @@ public class User {
     private Role role;
     @DocumentReference
     private List<Classroom> classrooms = new ArrayList<>();
+    private Integer score;
 
     public User(String name, String email, String password, Role role) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.score = 0;
     }
 
-    public String getName() {
-        return name;
+    public void encodePassword() {
+        this.password = new BCryptPasswordEncoder().encode(password);
     }
 
-    public String getEmail() {
-        return email;
+    public void incrementScore(Integer score) {
+        this.score += score;
     }
 
-    public String getPassword() {
-        return password;
+    public boolean isUserEnrolledInClassroom(ObjectId classroomId) {
+        return classrooms.stream().anyMatch(classroom -> classroom.getId().equals(classroomId));
     }
 
-    public Role getRole() {
-        return role;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return Objects.equals(id, user.id); // Comparar apenas os IDs para evitar recursão
     }
 
-    public ObjectId getId() {
-        return id;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void encryptPassword() {
-        password = passwordEncoder.encode(password);
-    }
-
-    public List<Classroom> getClassrooms() {
-        return classrooms;
-    }
-
-    public boolean passwordIsValid(String password) {
-        return passwordEncoder.matches(password, this.password);
-    }
 }
