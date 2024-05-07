@@ -5,6 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class TokenDTO {
-    private String token;
+public class ReportDTO {
+
+    private byte[] csv;
+    private String fileName;
+
 }

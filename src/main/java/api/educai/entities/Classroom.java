@@ -2,15 +2,17 @@ package api.educai.entities;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+@Data
 @Document
 public class Classroom {
     @Id
@@ -23,24 +25,29 @@ public class Classroom {
     private String course;
     @DocumentReference
     private List<User> participants = new ArrayList<>();
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getCourse() {
-        return course;
-    }
-
-    public List<User> getParticipants() {
-        return participants;
-    }
+    @DocumentReference
+    private List<Classwork> classworks = new ArrayList<>();
+    @DocumentReference
+    private List<Post> posts = new ArrayList<>();
 
     public void addParticipant(User user) {
         participants.add(user);
+    }
+
+    public void addClasswork(Classwork classwork) { classworks.add(classwork); }
+
+    public void addPost(Post post) { posts.add(post); }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Classroom classroom = (Classroom) obj;
+        return Objects.equals(id, classroom.id); // Comparar apenas os IDs para evitar recursão
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
