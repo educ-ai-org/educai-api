@@ -114,7 +114,7 @@ public class UserService {
                 String nextSubmission = classroom.getClassworks().stream()
                         .min(Comparator.comparing(Classwork::getEndDate))
                         .map(Classwork::getTitle).orElse("-");
-
+              
                 return new StudentClassroomsDTO(classroom, nextSubmission);
             }).toList();
         }
