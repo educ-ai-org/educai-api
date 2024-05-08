@@ -4,6 +4,8 @@ import api.educai.dto.AnswerDTO;
 import api.educai.entities.Answer;
 import api.educai.entities.Classwork;
 import api.educai.services.ClassworkService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
@@ -18,10 +20,12 @@ import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @RequestMapping("classwork")
+@Tag(name = "Atividades", description = "API para serviços relacionados a atividades.")
 public class ClassworkController {
     @Autowired
     private ClassworkService classworkService;
 
+    @Operation(summary = "Cria uma sala de aula")
     @Secured("ROLE_TEACHER")
     @PostMapping
     public ResponseEntity<Classwork> createClasswork(
@@ -32,6 +36,7 @@ public class ClassworkController {
         return status(201).body(classworkService.createClasswork(classwork, classroomId, userId));
     }
 
+    @Operation(summary = "Cria uma resposta para uma atividade")
     @Secured("ROLE_STUDENT")
     @PostMapping("/answer")
     public ResponseEntity<Void> addAnswer(
@@ -43,12 +48,14 @@ public class ClassworkController {
         return status(201).build();
     }
 
+    @Operation(summary = "Retorna uma atividade via id")
     @GetMapping("/{id}")
     public ResponseEntity<Classwork> getClassworkById(@PathVariable ObjectId id) {
         Classwork classwork = classworkService.getClassworkById(id);
         return status(200).body(classwork);
     }
 
+    @Operation(summary = "Retorna respostas de uma atividade")
     @Secured("ROLE_TEACHER")
     @GetMapping("/{id}/answers")
     public ResponseEntity<List<AnswerDTO>> getAnswers(@PathVariable ObjectId id) {
