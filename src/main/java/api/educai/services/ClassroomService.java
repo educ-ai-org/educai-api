@@ -11,6 +11,8 @@ import api.educai.utils.CSVGenerator;
 import api.educai.utils.PasswordGenerator;
 import api.educai.utils.email.EmailService;
 import org.bson.types.ObjectId;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,8 @@ public class ClassroomService {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private ModelMapper mapper;
 
     public ClassroomInfoDTO createClassroom(Classroom classroom, ObjectId ownerId) {
         User user = userService.getUserById(ownerId);
@@ -163,5 +167,12 @@ public class ClassroomService {
         classroomRepository.save(classroom);
 
         return new ClassroomInfoDTO(classroom);
+    }
+
+    public List<UserScoreDTO> getLeaderBoard(ObjectId classroomId) {
+
+        List<User> usersScore = userService.getUsersScore(classroomId);
+        return mapper.map(usersScore, new TypeToken<List<UserScoreDTO>>(){}.getType());
+
     }
 }

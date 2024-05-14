@@ -34,6 +34,7 @@ public class User {
     @DocumentReference
     private List<Classroom> classrooms = new ArrayList<>();
     private Integer score;
+    private String profilePicture;
 
     public User(String name, String email, String password, Role role) {
         this.name = name;
