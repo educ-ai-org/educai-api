@@ -91,6 +91,13 @@ public class ClassroomController {
                 .body(reportBytes);
     }
 
+    @Operation(summary = "Retorna o placar da leaderboard com alunos ordenados de forma decrescente baseado na pontuação")
+    @GetMapping(value = "/{classroomId}/leaderboard")
+    public ResponseEntity<List<UserScoreDTO>> getLeaderBoard(@PathVariable ObjectId classroomId) {
+        List<UserScoreDTO> leaderBoard = classroomService.getLeaderBoard(classroomId);
+        return leaderBoard.isEmpty() ? status(204).build() : status(200).body(leaderBoard);
+    }
+
     @Operation(summary = "Deleta uma sala de aula")
     @DeleteMapping("/{id}")
     @Secured("ROLE_TEACHER")
