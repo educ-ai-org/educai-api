@@ -176,4 +176,8 @@ public class UserService {
         user.incrementScore(score);
         userRespository.save(user);
     }
+
+    public List<User> getUsersScore(ObjectId classroomId) {
+        return userRespository.findByRoleAndClassroomsIdOrderByScoreDesc(Role.STUDENT, classroomId);
+    }
 }
