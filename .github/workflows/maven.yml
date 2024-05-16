@@ -2,9 +2,9 @@ name: Java CI with Maven and Auto Tagging
 
 on:
   push:
-    branches: [ feat/bucketStorage ]
+    branches: [ main ]
   pull_request:
-    branches: [ feat/bucketStorage ]
+    branches: [ main ]
 
 jobs:
   CI:
