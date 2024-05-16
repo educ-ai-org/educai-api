@@ -2,9 +2,9 @@ name: Java CI with Maven and Auto Tagging
 
 on:
   push:
-    branches: [ main ]
+    branches: [ feat/bucketStorage ]
   pull_request:
-    branches: [ main ]
+    branches: [ feat/bucketStorage ]
 
 jobs:
   CI:
@@ -24,8 +24,6 @@ jobs:
 
     - name: Replace secrets
       run: |
-        AZURE_STORAGE_CONNECTION_STRING=$(printf '%s\n' "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" | sed 's/[\/&]/\\&/g')
-        AZURE_STORAGE_CONTAINER_NAME=$(printf '%s\n' "${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}" | sed 's/[\/&]/\\&/g')
         sed -i "s/{{azure.storage.connection.string}}/${AZURE_STORAGE_CONNECTION_STRING}/g" src/main/resources/application.properties
         sed -i "s/{{azure.storage.container.name}}/${AZURE_STORAGE_CONTAINER_NAME}/g" src/main/resources/application.properties
     
