@@ -24,7 +24,8 @@ public class PostController {
     @Secured("ROLE_TEACHER")
     @PostMapping
     @Operation(summary = "Cria um post")
-    public ResponseEntity<Post> createPost(@RequestBody @Valid PostDTO post, @RequestHeader String classroomId){
+    @GetMapping("/{classroomId}")
+    public ResponseEntity<Post> createPost(@RequestBody @Valid PostDTO post, @PathVariable String classroomId){
         return ResponseEntity.status(201).body(postService.createPost(post,classroomId));
     }
 
