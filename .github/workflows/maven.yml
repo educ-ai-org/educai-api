@@ -21,11 +21,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: 'maven'
-
-    - name: Replace secrets
-      run: |
-        sed -i "s/{{azure.storage.connection.string}}/${AZURE_STORAGE_CONNECTION_STRING}/g" src/main/resources/application.properties
-        sed -i "s/{{azure.storage.container.name}}/${AZURE_STORAGE_CONTAINER_NAME}/g" src/main/resources/application.properties
     
     - name: Build with Maven
       run: mvn -B package --file pom.xml
