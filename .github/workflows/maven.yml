@@ -19,8 +19,8 @@ jobs:
       MONGO_HOST: ${{ secrets.AZURE_VM_HOST }}
       MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
       MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
-      MONGO_PORT: ${{secrets.MONGO_PORT}}
-      MONGO_DB: ${{secrets.MONGO_DB}}
+      MONGO_PORT: ${{ secrets.MONGO_PORT }}
+      MONGO_DB: ${{ secrets.MONGO_DB }}
 
     steps:
     - uses: actions/checkout@v3
