@@ -12,6 +12,11 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
 
+    env:
+      azure.storage.connection.string: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+      azure.storage.container.name: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
+      azure.storage.url: ${{ secrets.AZURE_STORAGE_URL }}
+
     steps:
     - uses: actions/checkout@v3
 
@@ -23,7 +28,11 @@ jobs:
         cache: 'maven'
     
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B package --file pom.xml \
+        -Dazure.storage.connection.string="${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+        -Dazure.storage.container.name="${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}" \
+        -Dazure.storage.url="${{ secrets.AZURE_STORAGE_URL }}"
+
 
     - name: Run tests
       run: mvn -B test
