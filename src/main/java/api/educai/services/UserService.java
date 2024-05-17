@@ -15,8 +15,11 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +36,8 @@ public class UserService {
     private Token token;
     @Autowired
     private RefreshToken refreshToken;
+    @Autowired
+    private AzureBlobService azureBlobService;
 
     public UserDTO createUser(User user) {
         validateUserEmail(user.getEmail());
@@ -180,4 +185,32 @@ public class UserService {
     public List<User> getUsersScore(ObjectId classroomId) {
         return userRespository.findByRoleAndClassroomsIdOrderByScoreDesc(Role.STUDENT, classroomId);
     }
+
+    public void uploadFile(MultipartFile file, ObjectId userId) {
+        try {
+            User user = getUserById(userId);
+            String path = azureBlobService.upload(file);
+            user.setProfilePicture(path);
+            userRespository.save(user);
+        } catch (IOException ex) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(500), "Error while trying to upload user picture!");
+        }
+    }
+
+    public byte[] getProfilePicture(ObjectId userId) throws URISyntaxException {
+        User user = getUserById(userId);
+        String path = user.getProfilePicture();
+        String[] parts = path.split("/");
+        String fileName = parts[parts.length - 1];
+        return azureBlobService.download(fileName);
+    }
+
+    public String getProfilePictureUrl(ObjectId userId) throws URISyntaxException {
+        User user = getUserById(userId);
+        String path = user.getProfilePicture();
+        String[] parts = path.split("/");
+        String fileName = parts[parts.length - 1];
+        return azureBlobService.getBlobUrl(fileName);
+    }
+
 }
