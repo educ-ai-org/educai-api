@@ -17,9 +17,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.status;
@@ -113,4 +117,25 @@ public class UserController {
 
         return status(200).build();
     }
+
+    @Operation(summary = "Adiciona imagem de perfil do usuário")
+    @PostMapping("/{userId}/picture")
+    public ResponseEntity<Void> uploadProfilePicture(@RequestParam MultipartFile file, @PathVariable ObjectId userId) {
+        userService.uploadFile(file, userId);
+        return status(200).build();
+    }
+
+    @Operation(summary = "Busca imagem de perfil do usuário")
+    @GetMapping(value = "/{userId}/picture", produces = MediaType.ALL_VALUE)
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable ObjectId userId) throws URISyntaxException {
+        byte[] image = userService.getProfilePicture(userId);
+        return status(200).body(image);
+    }
+
+    @Operation(summary = "Busca URL de imagem de perfil do usuário")
+    @GetMapping(value = "/{userId}/picture-url")
+    public ResponseEntity<String> getProfilePictureUrl(@PathVariable ObjectId userId) throws URISyntaxException {
+        return status(200).body(userService.getProfilePictureUrl(userId));
+    }
+
 }
