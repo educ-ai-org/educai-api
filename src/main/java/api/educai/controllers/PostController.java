@@ -22,7 +22,6 @@ public class PostController {
     private PostService postService;
 
     @Secured("ROLE_TEACHER")
-    @PostMapping
     @Operation(summary = "Cria um post")
     @PostMapping
     public ResponseEntity<Post> createPost(@RequestBody @Valid PostDTO post, @PathVariable String id){
