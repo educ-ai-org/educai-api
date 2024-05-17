@@ -1,5 +1,6 @@
 package api.educai.controllers;
 
+import api.educai.dto.NewPostDTO;
 import api.educai.dto.PostDTO;
 import api.educai.entities.Post;
 import api.educai.services.PostService;
@@ -23,9 +24,9 @@ public class PostController {
 
     @Secured("ROLE_TEACHER")
     @Operation(summary = "Cria um post")
-    @PostMapping("/{id}")
-    public ResponseEntity<Post> createPost(@RequestBody @Valid PostDTO post, @PathVariable String id){
-        return ResponseEntity.status(201).body(postService.createPost(post, id));
+    @PostMapping
+    public ResponseEntity<Post> createPost(@RequestBody @Valid NewPostDTO post){
+        return ResponseEntity.status(201).body(postService.createPost(post));
     }
 
     @Operation(summary = "Retorna todos os posts")
