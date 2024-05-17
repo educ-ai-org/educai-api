@@ -27,6 +27,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<Post> createPost(@RequestBody @Valid NewPostDTO post){
         return ResponseEntity.status(201).body(postService.createPost(post));
+
     }
 
     @Operation(summary = "Retorna todos os posts")
