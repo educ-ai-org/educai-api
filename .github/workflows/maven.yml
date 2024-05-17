@@ -2,9 +2,9 @@ name: Java CI with Maven and Auto Tagging
 
 on:
   push:
-    branches: [ main ]
+    branches: [ feat/githubSecrets ]
   pull_request:
-    branches: [ main ]
+    branches: [ feat/githubSecrets ]
 
 jobs:
   CI:
@@ -16,6 +16,11 @@ jobs:
       AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
       AZURE_STORAGE_CONTAINER_NAME: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
       AZURE_STORAGE_URL: ${{ secrets.AZURE_STORAGE_URL }}
+      MONGO_HOST: ${{ secrets.AZURE_VM_HOST }}
+      MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
+      MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+      MONGO_PORT: ${{secrets.MONGO_PORT}}
+      MONGO_DB: ${{MONGO_DB}}
 
     steps:
     - uses: actions/checkout@v3
@@ -27,13 +32,6 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
 
-    - name: Create application.properties
-      run: |
-        echo "azure.storage.url=${AZURE_STORAGE_URL}" > src/main/resources/application.properties
-        echo "azure.storage.container.name=${AZURE_STORAGE_CONTAINER_NAME}" >> src/main/resources/application.properties
-        echo "azure.storage.connection.string=${AZURE_STORAGE_CONNECTION_STRING}" >> src/main/resources/application.properties
-  
-    
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
@@ -89,4 +87,3 @@ jobs:
         script: |
           chmod +x /home/educai/script-backend.sh
           sh /home/educai/script-backend.sh
-          
