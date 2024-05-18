@@ -3,24 +3,12 @@ name: Java CI with Maven and Auto Tagging
 on:
   push:
     branches: [ feat/githubSecrets ]
-  pull_request:
-    branches: [ feat/githubSecrets ]
 
 jobs:
   CI:
     permissions:
       contents: write
     runs-on: ubuntu-latest
-
-    env:
-      AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-      AZURE_STORAGE_CONTAINER_NAME: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
-      AZURE_STORAGE_URL: ${{ secrets.AZURE_STORAGE_URL }}
-      MONGO_HOST: ${{ secrets.AZURE_VM_HOST }}
-      MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
-      MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
-      MONGO_PORT: ${{ secrets.MONGO_PORT }}
-      MONGO_DB: ${{ secrets.MONGO_DB }}
 
     steps:
     - uses: actions/checkout@v3
@@ -37,6 +25,17 @@ jobs:
 
     - name: Run tests
       run: mvn -B test
+
+    - name: Configure Environment Variables
+      run: |
+          sed -i 's/\${AZURE_STORAGE_CONNECTION_STRING}/${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}/g' application.properties
+          sed -i 's/\${AZURE_STORAGE_CONTAINER_NAME}/${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}/g' application.properties
+          sed -i 's/\${MONGO_PORT}/${{ secrets.MONGO_PORT }}/g' application.properties
+          sed -i 's/\${MONGO_HOST}/${{ secrets.MONGO_HOST }}/g' application.properties
+          sed -i 's/\${MONGO_DB}/${{ secrets.MONGO_DB }}/g' application.properties
+          sed -i 's/\${MONGO_USERNAME}/${{ secrets.MONGO_USERNAME }}/g' application.properties
+          sed -i 's/\${MONGO_PASSWORD}/${{ secrets.MONGO_PASSWORD }}/g' application.properties
+
 
     # - name: Bump version and push tag
     #   id: tag_version
