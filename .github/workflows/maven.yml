@@ -28,13 +28,13 @@ jobs:
 
     - name: Configure Environment Variables
       run: |
-          sed -i 's/\${AZURE_STORAGE_CONNECTION_STRING}/${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}/g' application.properties
-          sed -i 's/\${AZURE_STORAGE_CONTAINER_NAME}/${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}/g' application.properties
-          sed -i 's/\${MONGO_PORT}/${{ secrets.MONGO_PORT }}/g' application.properties
-          sed -i 's/\${MONGO_HOST}/${{ secrets.MONGO_HOST }}/g' application.properties
-          sed -i 's/\${MONGO_DB}/${{ secrets.MONGO_DB }}/g' application.properties
-          sed -i 's/\${MONGO_USERNAME}/${{ secrets.MONGO_USERNAME }}/g' application.properties
-          sed -i 's/\${MONGO_PASSWORD}/${{ secrets.MONGO_PASSWORD }}/g' application.properties
+          sed -i 's/\$\{\{ secrets.AZURE_STORAGE_CONNECTION_STRING \}\}/'"${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}"'/g' application.properties
+          sed -i 's/\$\{\{ secrets.AZURE_STORAGE_CONTAINER_NAME \}\}/'"${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}"'/g' application.properties
+          sed -i 's/\$\{\{ secrets.MONGO_PORT \}\}/'"${{ secrets.MONGO_PORT }}"'/g' application.properties
+          sed -i 's/\$\{\{ secrets.MONGO_HOST \}\}/'"${{ secrets.MONGO_HOST }}"'/g' application.properties
+          sed -i 's/\$\{\{ secrets.MONGO_PORT \}\}/'"${{ secrets.MONGO_DB }}"'/g' application.properties
+          sed -i 's/\$\{\{ secrets.MONGO_HOST \}\}/'"${{ secrets.MONGO_USERNAME }}"'/g' application.properties
+          sed -i 's/\$\{\{ secrets.MONGO_PASSWORD \}\}/'"${{ secrets.MONGO_PASSWORD }}"'/g' application.properties
 
 
     # - name: Bump version and push tag
