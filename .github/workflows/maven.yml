@@ -24,7 +24,6 @@ jobs:
       run: |
           sed -i 's/\${AZURE_STORAGE_CONNECTION_STRING}/'"${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}"'/g' src/main/resources/application.properties
           sed -i 's/\${AZURE_STORAGE_CONTAINER_NAME}/'"${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}"'/g' src/main/resources/application.properties
-          sed -i 's/\${AZURE_STORAGE_URL}/'"${{ secrets.AZURE_STORAGE_URL }}"'/g' src/main/resources/application.properties
           sed -i 's/\${MONGO_PORT}/'"${{ secrets.MONGO_PORT }}"'/g' src/main/resources/application.properties
           sed -i 's/\${MONGO_HOST}/'"${{ secrets.MONGO_HOST }}"'/g' src/main/resources/application.properties
           sed -i 's/\${MONGO_DB}/'"${{ secrets.MONGO_DB }}"'/g' src/main/resources/application.properties
