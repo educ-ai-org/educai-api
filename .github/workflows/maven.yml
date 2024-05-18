@@ -31,6 +31,9 @@ jobs:
           sed -i 's#\${MONGO_PASSWORD}#'"${{ secrets.MONGO_PASSWORD }}"'#g' src/main/resources/application.properties
           sed -i 's#\${AZURE_STORAGE_URL}#'"${{ secrets.AZURE_STORAGE_URL }}"'#g' src/main/resources/application.properties
 
+    - name: Display application.properties
+      run: cat src/main/resources/application.properties
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
