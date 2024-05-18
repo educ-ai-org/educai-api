@@ -2,7 +2,7 @@ name: Java CI with Maven and Auto Tagging
 
 on:
   push:
-    branches: [ feat/githubSecrets ]
+    branches: [ main ]
 
 jobs:
   CI:
