@@ -1,7 +1,7 @@
 package api.educai.services;
 
 import api.educai.dto.NewPostDTO;
-import api.educai.dto.PostDTO;
+import api.educai.dto.PatchPost;
 import api.educai.entities.Classroom;
 import api.educai.entities.Post;
 import api.educai.repositories.ClassroomRepository;
@@ -52,7 +52,7 @@ public class PostService {
         return post;
     }
 
-    public Post updatePost(ObjectId id, PostDTO updatedPost){
+    public Post updatePost(ObjectId id, PatchPost updatedPost){
 
         Post post = postRepository.findById(id);
         post.setTitle(updatedPost.getTitle());
