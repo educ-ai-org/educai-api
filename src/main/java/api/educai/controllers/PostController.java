@@ -1,5 +1,7 @@
 package api.educai.controllers;
 
+import api.educai.dto.NewPostDTO;
+import api.educai.dto.PatchPost;
 import api.educai.dto.PostDTO;
 import api.educai.entities.Post;
 import api.educai.services.PostService;
@@ -7,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -20,12 +23,15 @@ import java.util.List;
 public class PostController {
     @Autowired
     private PostService postService;
+    @Autowired
+    private ModelMapper mapper;
 
     @Secured("ROLE_TEACHER")
     @Operation(summary = "Cria um post")
-    @PostMapping("/{id}")
-    public ResponseEntity<Post> createPost(@RequestBody @Valid PostDTO post, @PathVariable String id){
-        return ResponseEntity.status(201).body(postService.createPost(post, id));
+    @PostMapping
+    public ResponseEntity<Post> createPost(@RequestBody @Valid NewPostDTO post){
+        return ResponseEntity.status(201).body(postService.createPost(post));
+
     }
 
     @Operation(summary = "Retorna todos os posts")
@@ -36,14 +42,14 @@ public class PostController {
 
     @Operation(summary = "Retorna um post específico passando seu ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable String id){
-        return ResponseEntity.status(200).body(postService.getPostById(id));
+    public ResponseEntity<PostDTO> getPostById(@PathVariable String id){
+        return ResponseEntity.status(200).body(mapper.map(postService.getPostById(id), PostDTO.class));
     }
 
     @Operation(summary = "Atualiza o título de um post")
     @Secured("ROLE_TEACHER")
     @PatchMapping("/{id}")
-    public  ResponseEntity<Post> updateTituloPost(@PathVariable ObjectId id, @RequestBody @Valid PostDTO updatedPost){
+    public  ResponseEntity<Post> updateTituloPost(@PathVariable ObjectId id, @RequestBody @Valid PatchPost updatedPost){
         return ResponseEntity.status(200).body(postService.updatePost(id, updatedPost));
     }
     @Operation(summary = "Deleta um post")

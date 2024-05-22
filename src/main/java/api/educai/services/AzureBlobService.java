@@ -7,15 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.azure.core.http.rest.PagedIterable;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
-import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.models.BlobItem;
 
 @Service
@@ -23,7 +21,9 @@ public class AzureBlobService {
 
     @Autowired
     BlobContainerClient blobContainerClient;
-    private static String STORAGE_URL = "https://educaistorage.blob.core.windows.net/storage-educai/";
+    
+    @Value("${azure.storage.url}")
+    private String storageUrl;
 
     public String upload(MultipartFile file)
             throws IOException {
@@ -34,7 +34,7 @@ public class AzureBlobService {
         blob.upload(file.getInputStream(),
                 file.getSize(), true);
 
-        return STORAGE_URL + uuid;
+        return storageUrl + uuid;
     }
 
     public String getBlobUrl(String fileName){

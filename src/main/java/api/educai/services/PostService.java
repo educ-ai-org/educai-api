@@ -1,6 +1,7 @@
 package api.educai.services;
 
-import api.educai.dto.PostDTO;
+import api.educai.dto.NewPostDTO;
+import api.educai.dto.PatchPost;
 import api.educai.entities.Classroom;
 import api.educai.entities.Post;
 import api.educai.repositories.ClassroomRepository;
@@ -23,8 +24,8 @@ public class PostService {
     @Autowired
     private ModelMapper mapper;
 
-    public Post createPost(PostDTO newPost, String classroomId) {
-        Classroom classroom = classroomRepository.findById(new ObjectId(classroomId));
+    public Post createPost(NewPostDTO newPost) {
+        Classroom classroom = classroomRepository.findById(new ObjectId(newPost.getClassroomId()));
         Post post = mapper.map(newPost, Post.class);
         postRepository.save(post);
 
@@ -51,7 +52,7 @@ public class PostService {
         return post;
     }
 
-    public Post updatePost(ObjectId id, PostDTO updatedPost){
+    public Post updatePost(ObjectId id, PatchPost updatedPost){
 
         Post post = postRepository.findById(id);
         post.setTitle(updatedPost.getTitle());

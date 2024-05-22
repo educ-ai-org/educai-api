@@ -7,8 +7,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-public class PostDTO {
-    private String id;
+public class NewPostDTO {
     @NotBlank
     @Size(max = 100)
     private String title;
@@ -17,4 +16,5 @@ public class PostDTO {
     private String description;
     private String url;
     private LocalDate datePosting;
+    private String classroomId;
 }

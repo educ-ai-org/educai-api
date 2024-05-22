@@ -3,8 +3,6 @@ name: Java CI with Maven and Auto Tagging
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   CI:
@@ -22,10 +20,19 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
 
-    - name: Replace secrets
+    - name: Configure Environment Variables
       run: |
-        sed -i "s/{{azure.storage.connection.string}}/${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}/g" src/main/resources/application.properties
-        sed -i "s/{{azure.storage.container.name}}/${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}/g" src/main/resources/application.properties
+          sed -i 's#\${AZURE_STORAGE_CONNECTION_STRING}#'"${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}"'#g' src/main/resources/application.properties
+          sed -i 's#\${AZURE_STORAGE_CONTAINER_NAME}#'"${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_PORT}#'"${{ secrets.MONGO_PORT }}"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_HOST}#'"${{ secrets.MONGO_HOST }}"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_DB}#'"${{ secrets.MONGO_DB }}"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_USERNAME}#'"${{ secrets.MONGO_USERNAME }}"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_PASSWORD}#'"${{ secrets.MONGO_PASSWORD }}"'#g' src/main/resources/application.properties
+          sed -i 's#\${AZURE_STORAGE_URL}#'"${{ secrets.AZURE_STORAGE_URL }}"'#g' src/main/resources/application.properties
+
+    - name: Display application.properties
+      run: cat src/main/resources/application.properties
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
@@ -33,14 +40,14 @@ jobs:
     - name: Run tests
       run: mvn -B test
 
-    - name: Bump version and push tag
-      id: tag_version
-      uses: mathieudutour/github-tag-action@v5.6
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        default_bump: patch
-        initial_version: '1.0.0' # Sets the initial version if no tags exist
-        release_branches: main  # Ensures tags are only pushed on the main branch
+    # - name: Bump version and push tag
+    #   id: tag_version
+    #   uses: mathieudutour/github-tag-action@v5.6
+    #   with:
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     default_bump: patch
+    #     initial_version: '1.0.0' # Sets the initial version if no tags exist
+    #     release_branches: main  # Ensures tags are only pushed on the main branch
 
     - name: Upload Artifact
       id: upload-artifact
@@ -82,4 +89,3 @@ jobs:
         script: |
           chmod +x /home/educai/script-backend.sh
           sh /home/educai/script-backend.sh
-          
