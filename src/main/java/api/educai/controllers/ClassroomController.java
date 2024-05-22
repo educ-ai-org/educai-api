@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -30,6 +32,9 @@ import static org.springframework.http.ResponseEntity.*;
 public class ClassroomController {
     @Autowired
     private ClassroomService classroomService;
+    @Autowired
+    private ModelMapper mapper;
+
     @Operation(summary = "Cria uma sala de aula")
     @PostMapping
     @Secured("ROLE_TEACHER")
@@ -71,9 +76,9 @@ public class ClassroomController {
 
     @Operation(summary = "Retorna posts de uma sala de aula")
     @GetMapping("/{id}/posts")
-    public ResponseEntity<List<Post>> getPostsByClassroom(@PathVariable ObjectId id){
+    public ResponseEntity<List<PostDTO>> getPostsByClassroom(@PathVariable ObjectId id){
         List<Post> posts = classroomService.getPostsByClassroom(id);
-        return posts.isEmpty() ? status(204).build() : status(200).body(posts);
+        return posts.isEmpty() ? status(204).build() : status(200).body(mapper.map(posts, new TypeToken<List<PostDTO>>(){}.getType()));
     }
 
     @Operation(summary = "Retorna um csv com resultados de uma atividade")
