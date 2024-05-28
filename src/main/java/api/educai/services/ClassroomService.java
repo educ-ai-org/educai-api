@@ -34,6 +34,9 @@ public class ClassroomService {
     @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    private AzureBlobService azureBlobService;
+
     public ClassroomInfoDTO createClassroom(Classroom classroom, ObjectId ownerId) {
         User user = userService.getUserById(ownerId);
 
@@ -134,7 +137,9 @@ public class ClassroomService {
 
     public List<Post> getPostsByClassroom(ObjectId classroomId) {
         Classroom classroom = classroomRepository.findById(classroomId);
-        return classroom.getPosts();
+        List<Post> posts = classroom.getPosts();
+        posts.forEach(p -> p.setFile(azureBlobService.getBlobUrl(p.getFile())));
+        return posts;
     }
 
     public void deleteClassroom(ObjectId id, ObjectId userId) {
