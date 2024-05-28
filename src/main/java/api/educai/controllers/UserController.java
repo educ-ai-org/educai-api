@@ -120,7 +120,7 @@ public class UserController {
 
     @Operation(summary = "Adiciona imagem de perfil do usuário")
     @PostMapping("/{userId}/picture")
-    public ResponseEntity<Void> uploadProfilePicture(@RequestParam MultipartFile file, @PathVariable ObjectId userId) {
+    public ResponseEntity<Void> uploadProfilePicture(MultipartFile file, @PathVariable ObjectId userId) {
         userService.uploadFile(file, userId);
         return status(200).build();
     }
