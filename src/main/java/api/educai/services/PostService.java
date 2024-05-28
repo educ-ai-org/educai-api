@@ -11,8 +11,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -23,10 +25,22 @@ public class PostService {
     private ClassroomRepository classroomRepository;
     @Autowired
     private ModelMapper mapper;
+    @Autowired
+    private AzureBlobService azureBlobService;
 
-    public Post createPost(NewPostDTO newPost) {
+    public Post createPost(NewPostDTO newPost, MultipartFile file) {
         Classroom classroom = classroomRepository.findById(new ObjectId(newPost.getClassroomId()));
         Post post = mapper.map(newPost, Post.class);
+
+        if (file != null) {
+            try {
+                String path = azureBlobService.upload(file);
+                post.setFile(path);
+            } catch (IOException ex) {
+                throw new ResponseStatusException(HttpStatusCode.valueOf(500), "Error while trying to upload file!");
+            }
+        }
+
         postRepository.save(post);
 
         classroom.addPost(post);
