@@ -21,7 +21,7 @@ public class Post {
     @NotBlank
     @Size(max = 100)
     private String description;
-    private String url;
+    private String file;
     @NotNull
     private LocalDate datePosting;
 }

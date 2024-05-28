@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class PostController {
     @Secured("ROLE_TEACHER")
     @Operation(summary = "Cria um post")
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody @Valid NewPostDTO post){
-        return ResponseEntity.status(201).body(postService.createPost(post));
+    public ResponseEntity<Post> createPost(@RequestBody @Valid NewPostDTO post, MultipartFile file){
+        return ResponseEntity.status(201).body(postService.createPost(post, file));
 
     }
 
