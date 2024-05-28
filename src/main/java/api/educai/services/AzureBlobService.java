@@ -9,12 +9,14 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.azure.core.http.rest.PagedIterable;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.models.BlobItem;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AzureBlobService {
@@ -25,21 +27,41 @@ public class AzureBlobService {
     @Value("${azure.storage.url}")
     private String storageUrl;
 
+    @Value("${azure.storage.blob-token}")
+    private String blobToken;
+
     public String upload(MultipartFile file)
             throws IOException {
 
         String uuid = String.valueOf(UUID.randomUUID());
+        String[] parts;
+        String type = "";
+
+        try {
+            if (file.getOriginalFilename() != null) {
+                parts = file.getOriginalFilename().split("\\.");
+                type = "." + parts[parts.length - 1];
+            } else {
+                if (file.getContentType() != null) {
+                    parts = file.getContentType().split("/");
+                    type = "." + parts[parts.length - 1];
+                }
+            }
+        } catch (NullPointerException ex) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(415), "Error while trying to upload file. Check the file type and try again.");
+        }
+
         BlobClient blob = blobContainerClient
-                .getBlobClient(uuid);
+                .getBlobClient(uuid + type);
         blob.upload(file.getInputStream(),
                 file.getSize(), true);
 
-        return storageUrl + uuid;
+        return storageUrl + uuid + type;
     }
 
     public String getBlobUrl(String fileName){
         BlobClient blob = blobContainerClient.getBlobClient(fileName);
-        return blob.getBlobUrl();
+        return blob.getBlobUrl() + "?%s".formatted(blobToken);
     }
 
     public byte[] download(String fileName)
