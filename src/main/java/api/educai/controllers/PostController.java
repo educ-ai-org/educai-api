@@ -11,11 +11,14 @@ import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -29,9 +32,13 @@ public class PostController {
 
     @Secured("ROLE_TEACHER")
     @Operation(summary = "Cria um post")
-    @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody @Valid NewPostDTO post, MultipartFile file){
-        return ResponseEntity.status(201).body(postService.createPost(post, file));
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Post> createPost( @RequestParam("file") MultipartFile file,
+                                            @RequestParam("title") String title,
+                                            @RequestParam(value = "description", required = false) String description,
+                                            @RequestParam(value = "datePosting") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate datePosting,
+                                            @RequestParam(value = "classroomId") String classroomId){
+        return ResponseEntity.status(201).body(postService.createPost(new NewPostDTO(title, description, datePosting, classroomId), file));
 
     }
 
