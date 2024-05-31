@@ -54,6 +54,12 @@ public class PostController {
         return ResponseEntity.status(200).body(mapper.map(postService.getPostById(id), PostDTO.class));
     }
 
+    @Operation(summary = "Retorna a URL para download de um post específico passando seu ID")
+    @GetMapping("/{id}/download")
+    public ResponseEntity<String> getPostUrlById(@PathVariable String id){
+        return ResponseEntity.status(200).body(postService.getPostUrlById(id));
+    }
+
     @Operation(summary = "Atualiza o título de um post")
     @Secured("ROLE_TEACHER")
     @PatchMapping("/{id}")
