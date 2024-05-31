@@ -35,6 +35,7 @@ public class PostService {
         if (file != null) {
             try {
                 String path = azureBlobService.upload(file);
+                post.setOriginalFileName(file.getOriginalFilename());
                 post.setFile(path);
             } catch (IOException ex) {
                 throw new ResponseStatusException(HttpStatusCode.valueOf(500), "Error while trying to upload file!");
@@ -57,16 +58,16 @@ public class PostService {
         return posts;
     }
 
-    public Post getPostById(String id){
+    public Post getPostById(String id) {
         ObjectId idPost = new ObjectId(id);
         Post post = postRepository.findById(idPost);
-        if(post == null){
+        if (post == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(204), "No posts found with that id");
         }
         return post;
     }
 
-    public Post updatePost(ObjectId id, PatchPost updatedPost){
+    public Post updatePost(ObjectId id, PatchPost updatedPost) {
 
         Post post = postRepository.findById(id);
         post.setTitle(updatedPost.getTitle());
@@ -76,8 +77,17 @@ public class PostService {
         return post;
     }
 
-    public Post deletePost(String id){
+    public Post deletePost(String id) {
         ObjectId idPost = new ObjectId(id);
         return postRepository.deleteById(idPost);
+    }
+
+    public String getPostUrlById(String id) {
+        Post post = getPostById(id);
+        String path = post.getFile();
+        String[] parts = path.split("/");
+        String fileName = parts[parts.length - 1];
+        return azureBlobService.getBlobUrl(fileName);
+
     }
 }

@@ -15,6 +15,7 @@ public class PostDTO {
     @NotBlank
     @Size(max = 100)
     private String description;
-    private String url;
+    private String file;
+    private String originalFileName;
     private LocalDate datePosting;
 }

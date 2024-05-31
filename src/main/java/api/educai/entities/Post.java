@@ -22,6 +22,7 @@ public class Post {
     @Size(max = 100)
     private String description;
     private String file;
+    private String originalFileName;
     @NotNull
     private LocalDate datePosting;
 }
