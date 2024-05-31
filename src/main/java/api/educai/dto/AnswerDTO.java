@@ -10,14 +10,15 @@ import java.util.List;
 @Data
 public class AnswerDTO {
 
+    private String id;
     @NotNull
     private ClassroomParticipantsDTO user;
-
     @NotNull
     private LocalDate datePosting;
     private List<QuestionAnswerDTO> questionAnswers;
 
     public AnswerDTO(Answer answer) {
+        this.id = String.valueOf(answer.getId());
         this.user = new ClassroomParticipantsDTO(answer.getUser());
         this.datePosting = answer.getDatePosting();
         this.questionAnswers = answer.getQuestionAnswers();
