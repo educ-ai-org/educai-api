@@ -3,11 +3,13 @@ package api.educai.dto;
 import api.educai.entities.Answer;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class AnswerDTO {
 
     private String id;
