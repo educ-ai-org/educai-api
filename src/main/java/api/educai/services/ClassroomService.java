@@ -48,7 +48,12 @@ public class ClassroomService {
     public ClassroomInfoDTO getClassroomDataById(ObjectId id) {
         Classroom classroom = getClassroomById(id);
 
-        return new ClassroomInfoDTO(classroom);
+        ClassroomInfoDTO classroomInfo = mapper.map(classroom, ClassroomInfoDTO.class);
+        classroomInfo.setPosts(mapper.map(classroom.getPosts(), new TypeToken<List<PostDTO>>() {}.getType()));
+        classroomInfo.setParticipants(mapper.map(classroom.getParticipants(), new TypeToken<List<UserDTO>>(){}.getType()));
+        classroomInfo.setClassworks(classroom.getClassworks().stream().map(ClassworkDTO::new).toList());
+
+        return classroomInfo;
     }
 
     public void inviteUser(ObjectId id, UserDTO newUser) {

@@ -1,12 +1,14 @@
 package api.educai.services;
 
 import api.educai.dto.AnswerDTO;
+import api.educai.dto.ClassworkDetailsDTO;
 import api.educai.dto.QuestionAnswerDTO;
 import api.educai.entities.*;
 import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
 import api.educai.repositories.ClassworkRepository;
 import org.bson.types.ObjectId;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,9 @@ public class ClassworkService {
     private QuestionService questionService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ModelMapper mapper;
 
     private final Integer CLASSWORK_SCORE = 10;
 
@@ -83,6 +88,16 @@ public class ClassworkService {
         }
 
         return classwork;
+    }
+
+    public ClassworkDetailsDTO getClassworkDetailsById(ObjectId id) {
+        Classwork classwork = classworkRepository.findById(id);
+
+        if(classwork == null) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Classwork not found!");
+        }
+
+        return mapper.map(classwork, ClassworkDetailsDTO.class);
     }
 
     public List<AnswerDTO> getAnswers(ObjectId classworkId) {

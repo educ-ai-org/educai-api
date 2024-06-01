@@ -1,6 +1,7 @@
 package api.educai.controllers;
 
 import api.educai.dto.AnswerDTO;
+import api.educai.dto.ClassworkDetailsDTO;
 import api.educai.entities.Answer;
 import api.educai.entities.Classwork;
 import api.educai.services.ClassworkService;
@@ -50,8 +51,8 @@ public class ClassworkController {
 
     @Operation(summary = "Retorna uma atividade via id")
     @GetMapping("/{id}")
-    public ResponseEntity<Classwork> getClassworkById(@PathVariable ObjectId id) {
-        Classwork classwork = classworkService.getClassworkById(id);
+    public ResponseEntity<ClassworkDetailsDTO> getClassworkById(@PathVariable ObjectId id) {
+        ClassworkDetailsDTO  classwork = classworkService.getClassworkDetailsById(id);
         return status(200).body(classwork);
     }
 
