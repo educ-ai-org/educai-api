@@ -43,7 +43,11 @@ public class ClassworkService {
 
         Classroom classroom = classroomService.getClassroomById(classroomId);
 
-        addOptions(classwork.getQuestions().stream().map(Question::getOptions).toList().get(0));
+        classwork.getQuestions().forEach(
+                question -> {
+                    addOptions(question.getOptions());
+                }
+        );
         addQuestions(classwork.getQuestions());
         classworkRepository.save(classwork);
 
