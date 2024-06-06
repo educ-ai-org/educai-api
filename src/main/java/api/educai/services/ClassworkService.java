@@ -75,6 +75,10 @@ public class ClassworkService {
     public void addAnswer(Answer answer, ObjectId userId, ObjectId classworkId) {
         Classwork classwork = getClassworkById(classworkId);
 
+        if (answerRepository.existsAnswerByUserIdAndClassworkId(userId, classworkId)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(409), "Answer already exists!");
+        }
+
         answer.setUser(userService.getUserById(userId));
         answer.setClasswork(classwork);
         answer.setCorrectPercentage(getAnswerScore(answer) * 10.0);

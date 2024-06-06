@@ -5,6 +5,9 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface AnswerRepository extends MongoRepository <Answer, Long> {
+
     Answer findById(ObjectId id);
+
+    boolean existsAnswerByUserIdAndClassworkId(ObjectId userId, ObjectId classworkId);
 
 }
