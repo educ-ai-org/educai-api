@@ -41,7 +41,7 @@ public class ClassworkController {
     @Secured("ROLE_STUDENT")
     @PostMapping("/answer")
     public ResponseEntity<Void> addAnswer(
-            @RequestBody Answer answer,
+            @RequestBody @Valid Answer answer,
             @RequestHeader ObjectId userId,
             @RequestHeader ObjectId classworkId
     ) {
