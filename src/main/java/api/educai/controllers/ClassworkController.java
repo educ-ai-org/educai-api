@@ -2,6 +2,7 @@ package api.educai.controllers;
 
 import api.educai.dto.AnswerDTO;
 import api.educai.dto.ClassworkDetailsDTO;
+import api.educai.dto.UserAnswerStatusDTO;
 import api.educai.entities.Answer;
 import api.educai.entities.Classwork;
 import api.educai.services.ClassworkService;
@@ -47,6 +48,15 @@ public class ClassworkController {
     ) {
         classworkService.addAnswer(answer, userId, classworkId);
         return status(201).build();
+    }
+
+    @Operation(summary = "Retorna uma lista de usuários e o status da resposta para uma atividade")
+    @Secured("ROLE_TEACHER")
+    @GetMapping("/{id}/answers/status")
+    public ResponseEntity<List<UserAnswerStatusDTO>> getUserAnswerStatus(
+            @PathVariable ObjectId id) {
+        List<UserAnswerStatusDTO> userAnswerStatusList = classworkService.getUserAnswerStatus(id);
+        return status(200).body(userAnswerStatusList);
     }
 
     @Operation(summary = "Retorna uma atividade via id")

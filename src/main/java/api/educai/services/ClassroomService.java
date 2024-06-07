@@ -185,4 +185,14 @@ public class ClassroomService {
         return mapper.map(usersScore, new TypeToken<List<UserScoreDTO>>(){}.getType());
 
     }
+
+    public Classroom getClassroomByClassworkId(ObjectId classworkId) {
+        List<Classroom> classrooms = classroomRepository.findAll();
+        return classrooms.stream()
+                .filter(classroom -> classroom.getClassworks().stream()
+                        .anyMatch(classwork -> classwork.getId().equals(classworkId)))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Classroom not found!"));
+    }
+
 }

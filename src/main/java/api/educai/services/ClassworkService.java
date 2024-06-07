@@ -3,6 +3,7 @@ package api.educai.services;
 import api.educai.dto.AnswerDTO;
 import api.educai.dto.ClassworkDetailsDTO;
 import api.educai.dto.QuestionAnswerDTO;
+import api.educai.dto.UserAnswerStatusDTO;
 import api.educai.entities.*;
 import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
@@ -131,6 +132,20 @@ public class ClassworkService {
 
         return score;
 
+    }
+
+    public List<UserAnswerStatusDTO> getUserAnswerStatus(ObjectId classworkId) {
+        Classwork classwork = getClassworkById(classworkId);
+        Classroom classroom = classroomService.getClassroomByClassworkId(classworkId);
+        List<User> classroomUsers = classroom.getParticipants();
+
+        return classroomUsers.stream().map(user -> {
+            UserAnswerStatusDTO userAnswerStatus = new UserAnswerStatusDTO();
+            userAnswerStatus.setUserId(String.valueOf(user.getId()));
+            boolean hasAnswered = answerRepository.existsAnswerByUserIdAndClassworkId(user.getId(), classworkId);
+            userAnswerStatus.setHasAnswered(hasAnswered);
+            return userAnswerStatus;
+        }).collect(Collectors.toList());
     }
 
 }
