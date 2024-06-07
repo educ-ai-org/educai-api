@@ -12,6 +12,7 @@ public class UserDTO {
     private String name;
     private String email;
     private Role role;
+    private String profilePicture;
 
     public UserDTO(User user) {
         this.id = String.valueOf(user.getId());
