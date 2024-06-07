@@ -1,6 +1,10 @@
 package api.educai.services;
 
-import api.educai.dto.*;
+import api.educai.dto.auth.AuthDTO;
+import api.educai.dto.auth.LoginDTO;
+import api.educai.dto.auth.TokenDTO;
+import api.educai.dto.classroom.ClassroomInfoDTO;
+import api.educai.dto.user.*;
 import api.educai.entities.Classwork;
 import api.educai.entities.TokenBlacklist;
 import api.educai.entities.User;
