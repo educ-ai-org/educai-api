@@ -4,6 +4,7 @@ import api.educai.dto.classroom.ClassroomInfoDTO;
 import api.educai.dto.classroom.PatchClassroomTitleAndCourse;
 import api.educai.dto.classroom.UserScoreDTO;
 import api.educai.dto.classwork.ClassworkDTO;
+import api.educai.dto.classwork.ClassworkUserDTO;
 import api.educai.dto.post.PostDTO;
 import api.educai.dto.user.ReportDTO;
 import api.educai.dto.user.UserDTO;
@@ -72,6 +73,7 @@ public class ClassroomController {
     }
 
     @Operation(summary = "Retorna atividades de uma sala de aula")
+    @Secured("ROLE_TEACHER")
     @GetMapping("/{id}/classworks")
     public ResponseEntity<List<ClassworkDTO>> getClassworksByClassroom(@PathVariable ObjectId id) {
         List<ClassworkDTO> classworks = classroomService.getClassworks(id);
@@ -81,8 +83,8 @@ public class ClassroomController {
     @Operation(summary = "Retorna atividades de uma sala de aula com o status de resposta do usuário")
     @Secured("ROLE_STUDENT")
     @GetMapping("/{id}/classworks/{userId}")
-    public ResponseEntity<List<ClassworkDTO>> getClassworksByClassroom(@PathVariable ObjectId id, @PathVariable ObjectId userId) {
-        List<ClassworkDTO> classworks = classroomService.getClassworks(id);
+    public ResponseEntity<List<ClassworkUserDTO>> getClassworksByClassroom(@PathVariable ObjectId id, @PathVariable ObjectId userId) {
+        List<ClassworkUserDTO> classworks = classroomService.getClassworksByUser(id, userId);
         return classworks.isEmpty() ? status(204).build() : status(200).body(classworks);
     }
 

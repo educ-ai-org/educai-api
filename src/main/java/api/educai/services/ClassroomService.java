@@ -5,6 +5,7 @@ import api.educai.dto.classroom.ClassroomInfoDTO;
 import api.educai.dto.classroom.PatchClassroomTitleAndCourse;
 import api.educai.dto.classroom.UserScoreDTO;
 import api.educai.dto.classwork.ClassworkDTO;
+import api.educai.dto.classwork.ClassworkUserDTO;
 import api.educai.dto.post.PostDTO;
 import api.educai.dto.user.NewStudentEmailDTO;
 import api.educai.dto.user.ReportDTO;
@@ -132,6 +133,17 @@ public class ClassroomService {
     public List<ClassworkDTO> getClassworks(ObjectId id) {
         Classroom classroom = getClassroomById(id);
         return classroom.getClassworks().stream().map(ClassworkDTO::new).toList();
+    }
+
+    public List<ClassworkUserDTO> getClassworksByUser(ObjectId id, ObjectId userId) {
+        Classroom classroom = getClassroomById(id);
+        User user = userService.getUserById(userId);
+        return classroom.getClassworks().stream().map(classwork -> {
+            ClassworkUserDTO classworkUserDTO = new ClassworkUserDTO(classwork);
+            classworkUserDTO.setHasAnswered(classwork.getAnswers().stream()
+                    .anyMatch(answer -> answer.getUser().equals(user)));
+            return classworkUserDTO;
+        }).toList();
     }
 
     public ReportDTO getUserReport(ObjectId classroomId, ObjectId userId) {
