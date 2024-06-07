@@ -1,11 +1,11 @@
 package api.educai.controllers;
 
-import api.educai.dto.UserDTO;
-import api.educai.dto.ClassroomInfoDTO;
-import api.educai.dto.AuthDTO;
-import api.educai.dto.LoginDTO;
-import api.educai.dto.PatchUserEmailAndName;
-import api.educai.dto.TokenDTO;
+import api.educai.dto.user.UserDTO;
+import api.educai.dto.classroom.ClassroomInfoDTO;
+import api.educai.dto.auth.AuthDTO;
+import api.educai.dto.auth.LoginDTO;
+import api.educai.dto.user.PatchUserEmailAndName;
+import api.educai.dto.auth.TokenDTO;
 import api.educai.entities.User;
 import api.educai.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package api.educai.utils.email;
 
-import api.educai.dto.AddStudentInClassroomDTO;
-import api.educai.dto.NewStudentEmailDTO;
+import api.educai.dto.classroom.AddStudentInClassroomDTO;
+import api.educai.dto.user.NewStudentEmailDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.server.ResponseStatusException;

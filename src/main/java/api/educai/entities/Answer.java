@@ -1,6 +1,6 @@
 package api.educai.entities;
 
-import api.educai.dto.QuestionAnswerDTO;
+import api.educai.dto.answer.QuestionAnswerDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.bson.types.ObjectId;

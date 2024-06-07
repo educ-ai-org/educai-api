@@ -1,8 +1,8 @@
 package api.educai.services;
 
-import api.educai.dto.GetWordDefinitionDTO;
-import api.educai.dto.MeaningDTO;
-import api.educai.dto.WordDefinitionDTO;
+import api.educai.dto.dictionary.GetWordDefinitionDTO;
+import api.educai.dto.dictionary.MeaningDTO;
+import api.educai.dto.dictionary.WordDefinitionDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatusCode;

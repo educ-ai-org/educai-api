@@ -1,6 +1,6 @@
 package api.educai.controllers;
 
-import api.educai.dto.WordDefinitionDTO;
+import api.educai.dto.dictionary.WordDefinitionDTO;
 import api.educai.services.DictionaryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

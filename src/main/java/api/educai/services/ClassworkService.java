@@ -1,9 +1,9 @@
 package api.educai.services;
 
-import api.educai.dto.AnswerDTO;
-import api.educai.dto.ClassworkDetailsDTO;
-import api.educai.dto.QuestionAnswerDTO;
-import api.educai.dto.UserAnswerStatusDTO;
+import api.educai.dto.answer.AnswerDTO;
+import api.educai.dto.classwork.ClassworkDetailsDTO;
+import api.educai.dto.answer.QuestionAnswerDTO;
+import api.educai.dto.answer.UserAnswerStatusDTO;
 import api.educai.entities.*;
 import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;

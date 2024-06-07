@@ -1,8 +1,8 @@
 package api.educai.controllers;
 
-import api.educai.dto.AnswerDTO;
-import api.educai.dto.ClassworkDetailsDTO;
-import api.educai.dto.UserAnswerStatusDTO;
+import api.educai.dto.answer.AnswerDTO;
+import api.educai.dto.classwork.ClassworkDetailsDTO;
+import api.educai.dto.answer.UserAnswerStatusDTO;
 import api.educai.entities.Answer;
 import api.educai.entities.Classwork;
 import api.educai.services.ClassworkService;

@@ -1,6 +1,14 @@
 package api.educai.services;
 
-import api.educai.dto.*;
+import api.educai.dto.classroom.AddStudentInClassroomDTO;
+import api.educai.dto.classroom.ClassroomInfoDTO;
+import api.educai.dto.classroom.PatchClassroomTitleAndCourse;
+import api.educai.dto.classroom.UserScoreDTO;
+import api.educai.dto.classwork.ClassworkDTO;
+import api.educai.dto.post.PostDTO;
+import api.educai.dto.user.NewStudentEmailDTO;
+import api.educai.dto.user.ReportDTO;
+import api.educai.dto.user.UserDTO;
 import api.educai.entities.Answer;
 import api.educai.entities.Classroom;
 import api.educai.entities.Post;
