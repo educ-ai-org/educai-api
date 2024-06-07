@@ -1,7 +1,7 @@
 package api.educai.services;
 
-import api.educai.dto.NewPostDTO;
-import api.educai.dto.PatchPost;
+import api.educai.dto.post.NewPostDTO;
+import api.educai.dto.post.PatchPost;
 import api.educai.entities.Classroom;
 import api.educai.entities.Post;
 import api.educai.repositories.ClassroomRepository;

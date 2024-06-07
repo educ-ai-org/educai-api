@@ -1,6 +1,6 @@
 package api.educai.entities;
 
-import api.educai.dto.InvalidTokenDTO;
+import api.educai.dto.auth.InvalidTokenDTO;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;

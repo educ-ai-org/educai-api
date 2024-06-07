@@ -1,8 +1,8 @@
 package api.educai.controllers;
 
-import api.educai.dto.NewPostDTO;
-import api.educai.dto.PatchPost;
-import api.educai.dto.PostDTO;
+import api.educai.dto.post.NewPostDTO;
+import api.educai.dto.post.PatchPost;
+import api.educai.dto.post.PostDTO;
 import api.educai.entities.Post;
 import api.educai.services.PostService;
 import io.swagger.v3.oas.annotations.Operation;

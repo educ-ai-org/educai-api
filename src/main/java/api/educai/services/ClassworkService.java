@@ -1,9 +1,12 @@
 package api.educai.services;
 
-import api.educai.dto.AnswerDTO;
-import api.educai.dto.ClassworkDetailsDTO;
-import api.educai.dto.QuestionAnswerDTO;
+import api.educai.dto.answer.AnswerDTO;
+import api.educai.dto.classwork.ClassworkDetailsDTO;
+import api.educai.dto.answer.QuestionAnswerDTO;
+import api.educai.dto.answer.UserAnswerStatusDTO;
+import api.educai.dto.user.UserDTO;
 import api.educai.entities.*;
+import api.educai.enums.Role;
 import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
 import api.educai.repositories.ClassworkRepository;
@@ -131,6 +134,22 @@ public class ClassworkService {
 
         return score;
 
+    }
+
+    public List<UserAnswerStatusDTO> getUserAnswerStatus(ObjectId classworkId) {
+
+        Classroom classroom = classroomService.getClassroomByClassworkId(classworkId);
+        List<User> classroomUsers = classroom.getParticipants();
+
+        return classroomUsers.stream()
+            .filter(user -> user.getRole().equals(Role.STUDENT))
+            .map(user -> {
+                UserAnswerStatusDTO userAnswerStatus = new UserAnswerStatusDTO();
+                userAnswerStatus.setUser(mapper.map(user, UserDTO.class));
+                boolean hasAnswered = answerRepository.existsAnswerByUserIdAndClassworkId(user.getId(), classworkId);
+                userAnswerStatus.setHasAnswered(hasAnswered);
+                return userAnswerStatus;
+            }).toList();
     }
 
 }

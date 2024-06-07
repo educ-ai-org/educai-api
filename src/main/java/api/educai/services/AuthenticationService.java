@@ -1,6 +1,6 @@
 package api.educai.services;
 
-import api.educai.dto.UserDetailsDTO;
+import api.educai.dto.user.UserDetailsDTO;
 import api.educai.entities.User;
 import api.educai.repositories.UserRespository;
 import org.springframework.beans.factory.annotation.Autowired;

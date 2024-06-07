@@ -1,10 +1,16 @@
 package api.educai.controllers;
 
-import api.educai.dto.*;
+import api.educai.dto.classroom.ClassroomInfoDTO;
+import api.educai.dto.classroom.PatchClassroomTitleAndCourse;
+import api.educai.dto.classroom.UserScoreDTO;
+import api.educai.dto.classwork.ClassworkDTO;
+import api.educai.dto.classwork.ClassworkUserDTO;
+import api.educai.dto.post.PostDTO;
+import api.educai.dto.user.ReportDTO;
+import api.educai.dto.user.UserDTO;
 import api.educai.entities.Classroom;
 import api.educai.entities.Post;
 import api.educai.services.ClassroomService;
-import api.educai.services.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +27,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.*;
@@ -68,9 +73,18 @@ public class ClassroomController {
     }
 
     @Operation(summary = "Retorna atividades de uma sala de aula")
+    @Secured("ROLE_TEACHER")
     @GetMapping("/{id}/classworks")
     public ResponseEntity<List<ClassworkDTO>> getClassworksByClassroom(@PathVariable ObjectId id) {
         List<ClassworkDTO> classworks = classroomService.getClassworks(id);
+        return classworks.isEmpty() ? status(204).build() : status(200).body(classworks);
+    }
+
+    @Operation(summary = "Retorna atividades de uma sala de aula com o status de resposta do usuário")
+    @Secured("ROLE_STUDENT")
+    @GetMapping("/{id}/classworks/{userId}")
+    public ResponseEntity<List<ClassworkUserDTO>> getClassworksByClassroom(@PathVariable ObjectId id, @PathVariable ObjectId userId) {
+        List<ClassworkUserDTO> classworks = classroomService.getClassworksByUser(id, userId);
         return classworks.isEmpty() ? status(204).build() : status(200).body(classworks);
     }
 

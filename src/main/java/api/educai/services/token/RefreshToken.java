@@ -1,6 +1,6 @@
 package api.educai.services.token;
 
-import api.educai.dto.UserDetailsDTO;
+import api.educai.dto.user.UserDetailsDTO;
 import api.educai.entities.TokenBlacklist;
 import api.educai.repositories.TokenBlacklistRepository;
 import com.auth0.jwt.JWT;
