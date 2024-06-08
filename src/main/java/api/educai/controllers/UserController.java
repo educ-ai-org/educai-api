@@ -116,7 +116,15 @@ public class UserController {
 
         Cookie cookie = new Cookie("refreshToken", null);
         cookie.setMaxAge(0);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+
         response.addCookie(cookie);
+
+        String cookieHeader = String.format("refreshToken=; Max-Age=0; Path=%s; Secure; HttpOnly; SameSite=Strict",
+                cookie.getPath());
+        response.addHeader("Set-Cookie", cookieHeader);
 
         return status(200).build();
     }
