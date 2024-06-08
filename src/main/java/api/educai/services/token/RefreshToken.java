@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Date;
 import java.util.Optional;
 
@@ -30,7 +28,9 @@ public class RefreshToken implements IToken {
     @Override
     public String getToken(UserDetailsDTO user) {
         try {
-            Instant exp = LocalDateTime.now().plusDays(15).toInstant(ZoneOffset.of("-03:00")); //Expires in 15 days
+            ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+            ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId).plusDays(15); //Expires in 15 days
+            Instant exp = zonedDateTime.toInstant();
 
             return JWT.create()
                     .withClaim("id", user.getId().toString())
