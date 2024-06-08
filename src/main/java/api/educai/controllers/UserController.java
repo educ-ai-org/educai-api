@@ -47,11 +47,10 @@ public class UserController {
 
         Cookie cookie = new Cookie("refreshToken", authDTO.getRefreshToken());
         cookie.setMaxAge(15 * 24 * 60 * 60); // Expires in 15 days
-        cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
 
-        String cookieHeader = String.format("refreshToken=%s; Max-Age=%d; Path=%s; Secure; HttpOnly; SameSite=strict",
+        String cookieHeader = String.format("refreshToken=%s; Max-Age=%d; Path=%s; HttpOnly; SameSite=strict",
                 authDTO.getRefreshToken(), cookie.getMaxAge(), cookie.getPath());
         response.setHeader("Set-Cookie", cookieHeader);
 
@@ -116,13 +115,12 @@ public class UserController {
 
         Cookie cookie = new Cookie("refreshToken", null);
         cookie.setMaxAge(0);
-        cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
 
         response.addCookie(cookie);
 
-        String cookieHeader = String.format("refreshToken=; Max-Age=0; Path=%s; Secure; HttpOnly; SameSite=Strict",
+        String cookieHeader = String.format("refreshToken=; Max-Age=0; Path=%s; HttpOnly; SameSite=Strict",
                 cookie.getPath());
         response.addHeader("Set-Cookie", cookieHeader);
 
