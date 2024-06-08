@@ -49,8 +49,12 @@ public class UserController {
         cookie.setMaxAge(15 * 24 * 60 * 60); // Expires in 15 days
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
 
-        response.addCookie(cookie);
+        String cookieHeader = String.format("refreshToken=%s; Max-Age=%d; Path=%s; Secure; HttpOnly; SameSite=strict",
+                authDTO.getRefreshToken(), cookie.getMaxAge(), cookie.getPath());
+        response.setHeader("Set-Cookie", cookieHeader);
+
         return status(200).body(authDTO);
     }
 
@@ -100,7 +104,7 @@ public class UserController {
     @PostMapping("/logoff")
     public ResponseEntity<Void> logoff(
             HttpServletRequest request,
-            @CookieValue(name = "refreshToken") @NotBlank String refreshToken,
+            @CookieValue(name = "refreshToken") String refreshToken,
             HttpServletResponse response
     ) {
         ObjectId userId = (ObjectId) request.getAttribute("userId");
@@ -112,7 +116,15 @@ public class UserController {
 
         Cookie cookie = new Cookie("refreshToken", null);
         cookie.setMaxAge(0);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+
         response.addCookie(cookie);
+
+        String cookieHeader = String.format("refreshToken=; Max-Age=0; Path=%s; Secure; HttpOnly; SameSite=Strict",
+                cookie.getPath());
+        response.addHeader("Set-Cookie", cookieHeader);
 
         return status(200).build();
     }
