@@ -7,4 +7,5 @@ import lombok.Data;
 public class UserAnswerStatusDTO {
     private UserDTO user;
     private boolean hasAnswered;
+    private Double correctPercentage;
 }
