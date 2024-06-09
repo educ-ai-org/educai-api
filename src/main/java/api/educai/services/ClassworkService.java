@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,7 +95,7 @@ public class ClassworkService {
     public Classwork getClassworkById(ObjectId id) {
         Classwork classwork = classworkRepository.findById(id);
 
-        if(classwork == null) {
+        if (classwork == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Classwork not found!");
         }
 
@@ -104,7 +105,7 @@ public class ClassworkService {
     public ClassworkDetailsDTO getClassworkDetailsById(ObjectId id) {
         Classwork classwork = classworkRepository.findById(id);
 
-        if(classwork == null) {
+        if (classwork == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Classwork not found!");
         }
 
@@ -142,14 +143,19 @@ public class ClassworkService {
         List<User> classroomUsers = classroom.getParticipants();
 
         return classroomUsers.stream()
-            .filter(user -> user.getRole().equals(Role.STUDENT))
-            .map(user -> {
-                UserAnswerStatusDTO userAnswerStatus = new UserAnswerStatusDTO();
-                userAnswerStatus.setUser(mapper.map(user, UserDTO.class));
-                boolean hasAnswered = answerRepository.existsAnswerByUserIdAndClassworkId(user.getId(), classworkId);
-                userAnswerStatus.setHasAnswered(hasAnswered);
-                return userAnswerStatus;
-            }).toList();
+                .filter(user -> user.getRole().equals(Role.STUDENT))
+                .map(user -> {
+                    UserAnswerStatusDTO userAnswerStatus = new UserAnswerStatusDTO();
+                    userAnswerStatus.setUser(mapper.map(user, UserDTO.class));
+                    Optional<Answer> answer = answerRepository.findByUserIdAndClassworkId(user.getId(), classworkId);
+                    if (answer.isEmpty()) {
+                        userAnswerStatus.setHasAnswered(false);
+                    } else {
+                        userAnswerStatus.setHasAnswered(true);
+                        userAnswerStatus.setCorrectPercentage(answer.get().getCorrectPercentage());
+                    }
+                    return userAnswerStatus;
+                }).toList();
     }
 
 }
