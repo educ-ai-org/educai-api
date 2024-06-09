@@ -111,9 +111,13 @@ public class ClassworkService {
         return mapper.map(classwork, ClassworkDetailsDTO.class);
     }
 
-    public List<AnswerDTO> getAnswers(ObjectId classworkId) {
+    public AnswerDTO getAnswers(ObjectId classworkId, ObjectId userId) {
         Classwork classwork = classworkRepository.findById(classworkId);
-        return classwork.getAnswers().stream().map(AnswerDTO::new).toList();
+        return classwork.getAnswers().stream()
+                .filter(answer -> answer.getUser().getId().equals(userId))
+                .findFirst()
+                .map(AnswerDTO::new)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Answer not found!"));
     }
 
     public int getAnswerScore(Answer answer) {

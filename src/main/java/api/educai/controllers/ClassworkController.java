@@ -69,9 +69,9 @@ public class ClassworkController {
     @Operation(summary = "Retorna respostas de uma atividade")
     @Secured("ROLE_TEACHER")
     @GetMapping("/{id}/answers")
-    public ResponseEntity<List<AnswerDTO>> getAnswers(@PathVariable ObjectId id) {
-        List<AnswerDTO> answers = classworkService.getAnswers(id);
-        return answers.isEmpty() ? status(204).build() : status(200).body(answers);
+    public ResponseEntity<AnswerDTO> getAnswers(@PathVariable ObjectId id, @RequestHeader ObjectId userId) {
+        AnswerDTO answers = classworkService.getAnswers(id, userId);
+        return status(200).body(answers);
     }
 
 }
