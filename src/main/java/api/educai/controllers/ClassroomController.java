@@ -73,7 +73,6 @@ public class ClassroomController {
     }
 
     @Operation(summary = "Retorna atividades de uma sala de aula")
-    @Secured("ROLE_TEACHER")
     @GetMapping("/{id}/classworks")
     public ResponseEntity<List<ClassworkDTO>> getClassworksByClassroom(@PathVariable ObjectId id) {
         List<ClassworkDTO> classworks = classroomService.getClassworks(id);
