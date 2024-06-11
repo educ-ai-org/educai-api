@@ -24,6 +24,7 @@ public class ClassworkUserDTO {
     @NotNull
     private Integer totalQuestions;
     private boolean hasAnswered;
+    private Double correctPercentage;
 
     public ClassworkUserDTO(Classwork classwork) {
         this.id = String.valueOf(classwork.getId());

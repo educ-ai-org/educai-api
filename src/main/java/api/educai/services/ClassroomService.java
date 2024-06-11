@@ -140,8 +140,16 @@ public class ClassroomService {
         User user = userService.getUserById(userId);
         return classroom.getClassworks().stream().map(classwork -> {
             ClassworkUserDTO classworkUserDTO = new ClassworkUserDTO(classwork);
-            classworkUserDTO.setHasAnswered(classwork.getAnswers().stream()
-                    .anyMatch(answer -> answer.getUser().equals(user)));
+            Answer answer = classwork.getAnswers().stream()
+                    .filter(a -> a.getUser().equals(user))
+                    .findFirst()
+                    .orElse(null);
+            if (answer != null) {
+                classworkUserDTO.setHasAnswered(true);
+                classworkUserDTO.setCorrectPercentage(answer.getCorrectPercentage());
+            } else {
+                classworkUserDTO.setHasAnswered(false);
+            }
             return classworkUserDTO;
         }).toList();
     }
