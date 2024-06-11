@@ -12,14 +12,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 public class ClassworkServiceTest {
 
@@ -66,18 +62,5 @@ public class ClassworkServiceTest {
         assertThrows(ResponseStatusException.class, () -> classworkService.getClassworkById(id));
     }
 
-//    @Test
-//    public void getAnswerScore_HappyPath() {
-//        Classwork classwork = new Classwork();
-//        classwork.setQuestions(Arrays.asList(new Question()));
-//        Answer answer = new Answer();
-//        answer.setClasswork(classwork);
-//        answer.setQuestionAnswers(Arrays.asList(new QuestionAnswerDTO()));
-//
-//        int score = classworkService.getAnswerScore(answer);
-//
-//        assertEquals(0, score);
-//        verify(userService, times(1)).updateScore(anyInt(), any(User.class));
-//    }
 
 }
