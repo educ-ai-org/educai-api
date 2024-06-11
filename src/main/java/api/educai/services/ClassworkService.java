@@ -1,6 +1,6 @@
 package api.educai.services;
 
-import api.educai.dto.answer.AnswerDTO;
+import api.educai.dto.answer.AnswerDetailsDTO;
 import api.educai.dto.classwork.ClassworkDetailsDTO;
 import api.educai.dto.answer.QuestionAnswerDTO;
 import api.educai.dto.answer.UserAnswerStatusDTO;
@@ -112,9 +112,13 @@ public class ClassworkService {
         return mapper.map(classwork, ClassworkDetailsDTO.class);
     }
 
-    public List<AnswerDTO> getAnswers(ObjectId classworkId) {
-        Classwork classwork = classworkRepository.findById(classworkId);
-        return classwork.getAnswers().stream().map(AnswerDTO::new).toList();
+    public AnswerDetailsDTO getAnswer(ObjectId classworkId, ObjectId userId) {
+
+//        Classwork classwork = classworkRepository.findById(classworkId);
+        Answer answer = answerRepository.findByUserIdAndClassworkId(userId, classworkId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Answer not found!"));
+
+        return mapper.map(answer, AnswerDetailsDTO.class);
     }
 
     public double getAnswerScore(Answer answer) {
