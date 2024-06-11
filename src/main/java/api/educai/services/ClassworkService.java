@@ -10,6 +10,7 @@ import api.educai.enums.Role;
 import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
 import api.educai.repositories.ClassworkRepository;
+import api.educai.utils.FilaObj;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,12 +49,17 @@ public class ClassworkService {
 
         Classroom classroom = classroomService.getClassroomById(classroomId);
 
+        FilaObj<Question> questionsQueue = new FilaObj<>(classwork.getQuestions().size());
+        for (Question question : classwork.getQuestions()) {
+            questionsQueue.insert(question);
+        }
+
         classwork.getQuestions().forEach(
                 question -> {
                     addOptions(question.getOptions());
                 }
         );
-        addQuestions(classwork.getQuestions());
+        addQuestions(questionsQueue);
         classworkRepository.save(classwork);
 
         classroom.addClasswork(classwork);
@@ -62,10 +69,17 @@ public class ClassworkService {
     }
 
 
-    public void addQuestions(List<Question> questions) {
-        if (questions.isEmpty()) {
+    public void addQuestions(FilaObj<Question> questionsQueue) {
+        if (questionsQueue.isEmpty()) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404), "No questions to save");
         }
+
+        List<Question> questions = new ArrayList<>();
+
+        while (!questionsQueue.isEmpty()) {
+            questions.add(questionsQueue.poll());
+        }
+
         questionService.addQuestions(questions);
     }
 
