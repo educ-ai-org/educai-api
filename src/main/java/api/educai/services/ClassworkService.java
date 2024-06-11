@@ -114,7 +114,6 @@ public class ClassworkService {
 
     public AnswerDetailsDTO getAnswer(ObjectId classworkId, ObjectId userId) {
 
-//        Classwork classwork = classworkRepository.findById(classworkId);
         Answer answer = answerRepository.findByUserIdAndClassworkId(userId, classworkId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Answer not found!"));
 
