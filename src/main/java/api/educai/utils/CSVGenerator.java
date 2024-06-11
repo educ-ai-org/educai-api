@@ -1,5 +1,6 @@
 package api.educai.utils;
 
+import api.educai.dto.classwork.ClassworkReportDTO;
 import api.educai.entities.Answer;
 import api.educai.entities.Classroom;
 import api.educai.entities.User;
@@ -53,12 +54,19 @@ public class CSVGenerator {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Formatter saida = new Formatter(outputStream);
 
+        ClassworkReportDTO[][] classworkReport = new ClassworkReportDTO[answers.size()][3];
+        for (int i = 0; i < answers.size(); i++) {
+            Answer answer = answers.get(i);
+            classworkReport[i][0] = new ClassworkReportDTO(answer.getClasswork().getTitle(), answer.getCorrectPercentage(), answer.getDatePosting());
+        }
+
         try {
             saida.format("Student: %s;Course: %s;Classroom Name: %s\n", user.getName(), classroom.getCourse(), classroom.getTitle());
             saida.format("Nome da atividade;Porcentagem de acerto;Data de postagem\n");
 
-            for (Answer answer : answers) {
-                saida.format("%s;%.1f%%;%s\n", answer.getClasswork().getTitle(), answer.getCorrectPercentage(), answer.getDatePosting());
+            for (ClassworkReportDTO[] classworkReportDTOS : classworkReport) {
+                ClassworkReportDTO data = classworkReportDTOS[0];
+                saida.format("%s;%.1f%%;%s\n", data.getTitle(), data.getCorrectPercentage(), data.getDatePosting());
             }
 
         } catch (FormatterClosedException ex) {

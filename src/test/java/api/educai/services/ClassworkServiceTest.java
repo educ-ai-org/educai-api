@@ -1,5 +1,6 @@
 package api.educai.services;
 
+import api.educai.entities.*;
 import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
 import api.educai.repositories.ClassworkRepository;
@@ -43,29 +44,6 @@ public class ClassworkServiceTest {
     public void setup() {
         MockitoAnnotations.openMocks(this);
     }
-
-//    @Test
-//    public void createClasswork_HappyPath() {
-//
-//        Option option = new Option(new ObjectId(),"a", "Option A");
-//        Question question = new Question();
-//
-//        Classwork classwork = new Classwork();
-//
-//        Classroom classroom = new Classroom();
-//        ObjectId classroomId = new ObjectId();
-//        ObjectId userId = new ObjectId();
-//
-//        when(classroomService.getClassroomById(classroomId)).thenReturn(classroom);
-//        when(classworkRepository.save(any(Classwork.class))).thenReturn(classwork);
-//        when(classroomRepository.save(any(Classroom.class))).thenReturn(classroom);
-//
-//        Classwork result = classworkService.createClasswork(classwork, classroomId, userId);
-//
-//        assertEquals(classwork, result);
-//        verify(classworkRepository, times(1)).save(classwork);
-//        verify(classroomRepository, times(1)).save(classroom);
-//    }
 
     @Test
     public void addQuestions_EmptyList() {
