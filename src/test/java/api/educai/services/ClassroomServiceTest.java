@@ -1,7 +1,8 @@
 package api.educai.services;
 
-import api.educai.dto.ClassroomInfoDTO;
-import api.educai.dto.UserDTO;
+
+import api.educai.dto.classroom.ClassroomInfoDTO;
+import api.educai.dto.user.UserDTO;
 import api.educai.entities.Classroom;
 import api.educai.entities.User;
 import api.educai.enums.Role;
