@@ -4,6 +4,7 @@ import api.educai.entities.*;
 import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
 import api.educai.repositories.ClassworkRepository;
+import api.educai.utils.FilaObj;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ public class ClassworkServiceTest {
 
     @Test
     public void addQuestions_EmptyList() {
-        assertThrows(ResponseStatusException.class, () -> classworkService.addQuestions(Collections.emptyList()));
+        assertThrows(ResponseStatusException.class, () -> classworkService.addQuestions(new FilaObj<>(0)));
     }
 
     @Test
