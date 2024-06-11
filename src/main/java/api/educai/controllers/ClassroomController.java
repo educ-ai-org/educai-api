@@ -72,7 +72,8 @@ public class ClassroomController {
         return status(200).body(classroomService.getClassroomParticipants(id));
     }
 
-    @Operation(summary = "Retorna atividades de uma sala de aula")
+    @Operation(summary = "Retorna atividades de uma sala de aula para professor")
+    @Secured("ROLE_TEACHER")
     @GetMapping("/{id}/classworks")
     public ResponseEntity<List<ClassworkDTO>> getClassworksByClassroom(@PathVariable ObjectId id) {
         List<ClassworkDTO> classworks = classroomService.getClassworks(id);

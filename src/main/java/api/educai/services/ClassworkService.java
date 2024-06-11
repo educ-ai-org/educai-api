@@ -85,7 +85,7 @@ public class ClassworkService {
 
         answer.setUser(userService.getUserById(userId));
         answer.setClasswork(classwork);
-        answer.setCorrectPercentage(getAnswerScore(answer) * 10.0);
+        answer.setCorrectPercentage(getAnswerScore(answer));
         answerRepository.save(answer);
 
         classwork.addAnswer(answer);
@@ -117,7 +117,7 @@ public class ClassworkService {
         return classwork.getAnswers().stream().map(AnswerDTO::new).toList();
     }
 
-    public int getAnswerScore(Answer answer) {
+    public double getAnswerScore(Answer answer) {
 
         List<Question> questions = answer.getClasswork().getQuestions();
         List<QuestionAnswerDTO> answers = answer.getQuestionAnswers();
@@ -133,7 +133,7 @@ public class ClassworkService {
         int score = userCorrectAnswers.size() * CLASSWORK_SCORE / questions.size();
         userService.updateScore(score, answer.getUser());
 
-        return score;
+        return (int) ((userCorrectAnswers.size() * 100.0) / questions.size());
 
     }
 
