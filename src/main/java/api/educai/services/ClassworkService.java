@@ -175,4 +175,14 @@ public class ClassworkService {
                 }).toList();
     }
 
+    public Classwork deleteClassworkById(ObjectId id) {
+        Classwork classwork = classworkRepository.findById(id);
+
+        if (classwork == null) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Classwork not found!");
+        }
+
+        return classworkRepository.deleteById(id);
+    }
+
 }
