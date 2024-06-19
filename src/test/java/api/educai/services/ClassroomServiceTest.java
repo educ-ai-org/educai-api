@@ -6,10 +6,11 @@ import api.educai.dto.user.UserDTO;
 import api.educai.entities.Classroom;
 import api.educai.entities.User;
 import api.educai.enums.Role;
-import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
+import api.educai.repositories.UserRespository;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -28,9 +29,8 @@ public class ClassroomServiceTest {
 
     @Mock
     private ClassroomRepository classroomRepository;
-
     @Mock
-    private AnswerRepository answerRepository;
+    private UserRespository userRespository;
 
     @Mock
     private UserService userService;
@@ -42,6 +42,7 @@ public class ClassroomServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    @DisplayName("Create Classroom - Happy Path")
     @Test
     public void createClassroom_HappyPath() {
         Classroom classroom = new Classroom();
@@ -63,6 +64,7 @@ public class ClassroomServiceTest {
         verify(classroomRepository, times(1)).save(classroom);
     }
 
+    @DisplayName("Get Classroom Data By Id - Classroom Does Not Exists")
     @Test
     public void getClassroomDataById_NotFound() {
         ObjectId id = new ObjectId();
@@ -70,6 +72,7 @@ public class ClassroomServiceTest {
         assertThrows(ResponseStatusException.class, () -> classroomService.getClassroomDataById(id));
     }
 
+    @DisplayName("Invite User - User Already Exists")
     @Test
     public void inviteUser_UserAlreadyExists() {
         ObjectId id = new ObjectId();
@@ -81,6 +84,7 @@ public class ClassroomServiceTest {
         assertThrows(ResponseStatusException.class, () -> classroomService.inviteUser(id, newUser));
     }
 
+    @DisplayName("Get Classroom Participants - Empty List")
     @Test
     public void getClassroomParticipants_EmptyList() {
         ObjectId id = new ObjectId();
@@ -90,6 +94,7 @@ public class ClassroomServiceTest {
         assertTrue(classroomService.getClassroomParticipants(id).isEmpty());
     }
 
+    @DisplayName("Get Classworks - Empty List")
     @Test
     public void getClassworks_EmptyList() {
         ObjectId id = new ObjectId();
@@ -99,6 +104,7 @@ public class ClassroomServiceTest {
         assertTrue(classroomService.getClassworks(id).isEmpty());
     }
 
+    @DisplayName("Delete Classroom - User is Not a Teacher")
     @Test
     public void deleteClassroom_NotTeacher() {
         ObjectId id = new ObjectId();
@@ -112,5 +118,40 @@ public class ClassroomServiceTest {
         when(classroomRepository.findById(id)).thenReturn(classroom);
         when(userService.getUserById(userId)).thenReturn(user);
         assertThrows(ResponseStatusException.class, () -> classroomService.deleteClassroom(id, userId));
+    }
+
+    @DisplayName("Remove User - Happy Path")
+    @Test
+    public void removeUser_UserExistsInClassroom() {
+        ObjectId classroomId = new ObjectId();
+        ObjectId reqUserId = new ObjectId();
+        ObjectId userId = new ObjectId();
+        Classroom classroom = new Classroom();
+        User user = new User("name", "email", "password", Role.STUDENT);
+        user.setId(userId);
+        user.getClassrooms().add(classroom);
+        classroom.addParticipant(user);
+        classroom.setId(classroomId);
+
+        when(classroomRepository.findById(classroomId)).thenReturn(classroom);
+        when(userService.getUserById(userId)).thenReturn(user);
+
+        classroomService.removeUser(classroomId, userId, reqUserId);
+
+        assertFalse(classroom.getParticipants().contains(user));
+        assertFalse(user.getClassrooms().contains(classroom));
+        verify(classroomRepository, times(1)).save(classroom);
+    }
+
+    @DisplayName("Remove User - Classroom Does Not Exist")
+    @Test
+    public void removeUser_ClassroomDoesNotExist() {
+        ObjectId classroomId = new ObjectId();
+        ObjectId userId = new ObjectId();
+        ObjectId reqUserId = new ObjectId();
+
+        when(classroomRepository.findById(classroomId)).thenReturn(null);
+
+        assertThrows(ResponseStatusException.class, () -> classroomService.removeUser(classroomId, userId, reqUserId));
     }
 }
