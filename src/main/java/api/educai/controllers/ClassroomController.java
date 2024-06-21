@@ -139,4 +139,14 @@ public class ClassroomController {
 
         return status(200).body(classroomService.updateClassroom(id, classroom, userId));
     }
+
+    @Operation(summary = "Remove um aluno de uma sala de aula")
+    @DeleteMapping("/{id}/user/{userId}")
+    @Secured("ROLE_TEACHER")
+    public ResponseEntity<Void> removeUser(@PathVariable ObjectId id, @PathVariable ObjectId userId, HttpServletRequest request) {
+        ObjectId requestUserId = (ObjectId) request.getAttribute("userId");
+        classroomService.removeUser(id, userId, requestUserId);
+        return status(204).build();
+    }
+
 }

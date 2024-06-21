@@ -16,6 +16,7 @@ import api.educai.entities.Post;
 import api.educai.entities.User;
 import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
+import api.educai.repositories.UserRespository;
 import api.educai.utils.CSVGenerator;
 import api.educai.utils.PasswordGenerator;
 import api.educai.utils.email.EmailService;
@@ -36,7 +37,7 @@ public class ClassroomService {
     @Autowired
     private ClassroomRepository classroomRepository;
     @Autowired
-    private AnswerRepository answerRepository;
+    private UserRespository userRespository;
 
     @Autowired
     private UserService userService;
@@ -221,6 +222,22 @@ public class ClassroomService {
                         .anyMatch(classwork -> classwork.getId().equals(classworkId)))
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Classroom not found!"));
+    }
+
+    public void removeUser(ObjectId classroomId, ObjectId userId, ObjectId requestUserId) {
+
+        if (requestUserId.equals(userId)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(403), "You cannot remove yourself from the classroom");
+        }
+
+        Classroom classroom = getClassroomById(classroomId);
+        User user = userService.getUserById(userId);
+
+        classroom.getParticipants().removeIf(participant -> participant.getId().equals(userId));
+        user.getClassrooms().removeIf(c -> c.getId().equals(classroomId));
+
+        userRespository.save(user);
+        classroomRepository.save(classroom);
     }
 
 }
