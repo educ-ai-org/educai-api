@@ -175,4 +175,9 @@ public class ClassworkService {
                 }).toList();
     }
 
+    public Classwork deleteClassworkById(ObjectId id) {
+        getClassworkById(id);
+        return classworkRepository.deleteById(id);
+    }
+
 }

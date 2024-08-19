@@ -72,4 +72,10 @@ public class ClassworkController {
         return status(200).body(classworkService.getAnswer(id, userId));
     }
 
+    @Operation(summary = "Deleta uma atividade")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Classwork> deleteClassworkById(@PathVariable ObjectId id) {
+        return status(204).body(classworkService.deleteClassworkById(id));
+    }
+
 }
