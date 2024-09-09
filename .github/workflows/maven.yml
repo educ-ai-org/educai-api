@@ -24,11 +24,11 @@ jobs:
       run: |
           sed -i 's#\${AZURE_STORAGE_CONNECTION_STRING}#'"${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}"'#g' src/main/resources/application.properties
           sed -i 's#\${AZURE_STORAGE_CONTAINER_NAME}#'"${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}"'#g' src/main/resources/application.properties
-          sed -i 's#\${MONGO_PORT}#'"${{ secrets.MONGO_PORT }}"'#g' src/main/resources/application.properties
-          sed -i 's#\${MONGO_HOST}#'"${{ secrets.MONGO_HOST }}"'#g' src/main/resources/application.properties
-          sed -i 's#\${MONGO_DB}#'"${{ secrets.MONGO_DB }}"'#g' src/main/resources/application.properties
-          sed -i 's#\${MONGO_USERNAME}#'"${{ secrets.MONGO_USERNAME }}"'#g' src/main/resources/application.properties
-          sed -i 's#\${MONGO_PASSWORD}#'"${{ secrets.MONGO_PASSWORD }}"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_PORT}#'"27017"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_HOST}#'"ubuntu@10.0.0.249"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_DB}#'"educai"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_USERNAME}#'"educaiAdmin"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_PASSWORD}#'"i9lnkPC9U46sOg0"'#g' src/main/resources/application.properties
           sed -i 's#\${AZURE_STORAGE_URL}#'"${{ secrets.AZURE_STORAGE_URL }}"'#g' src/main/resources/application.properties
 
     - name: Display application.properties
@@ -72,20 +72,20 @@ jobs:
     - name: Deploy to Azure VM
       uses: appleboy/scp-action@v0.1.7
       with:
-          host: ${{ secrets.AZURE_VM_HOST }}
-          username: ${{ secrets.AZURE_VM_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.AZURE_VM_PORT }}
+          host: 54.81.18.205
+          username: ubuntu
+          key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+          port: 22
           source: "target/*.jar"
           target: "/home/educai/java-app"
 
     - name: Move Java App to Docker Container
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ secrets.AZURE_VM_HOST }}
-        username: ${{ secrets.AZURE_VM_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.AZURE_VM_PORT }}
+        host: 54.81.18.205
+        username: ubuntu
+        key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+        port: 22
         script: |
           chmod +x /home/educai/script-backend.sh
           sh /home/educai/script-backend.sh
