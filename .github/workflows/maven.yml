@@ -77,7 +77,7 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.AWS_VM_PORT }}
           source: "target/*.jar"
-          target: "/home/educai/java-app"
+          target: "/home/ubuntu/java-app"
 
     - name: Move Java App to Docker Container
       uses: appleboy/ssh-action@v1.0.3
