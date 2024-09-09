@@ -24,11 +24,11 @@ jobs:
       run: |
           sed -i 's#\${AZURE_STORAGE_CONNECTION_STRING}#'"${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}"'#g' src/main/resources/application.properties
           sed -i 's#\${AZURE_STORAGE_CONTAINER_NAME}#'"${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}"'#g' src/main/resources/application.properties
-          sed -i 's#\${MONGO_PORT}#'"27017"'#g' src/main/resources/application.properties
-          sed -i 's#\${MONGO_HOST}#'"ubuntu@10.0.0.249"'#g' src/main/resources/application.properties
-          sed -i 's#\${MONGO_DB}#'"educai"'#g' src/main/resources/application.properties
-          sed -i 's#\${MONGO_USERNAME}#'"educaiAdmin"'#g' src/main/resources/application.properties
-          sed -i 's#\${MONGO_PASSWORD}#'"i9lnkPC9U46sOg0"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_PORT}#'"${{ secrets.MONGO_PORT }}"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_HOST}#'"${{ secrets.AWS_MONGO_HOST }}"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_DB}#'"${{ secrets.MONGO_DB }}"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_USERNAME}#'"${{ secrets.MONGO_USERNAME }}"'#g' src/main/resources/application.properties
+          sed -i 's#\${MONGO_PASSWORD}#'"${{ secrets.MONGO_PASSWORD }}"'#g' src/main/resources/application.properties
           sed -i 's#\${AZURE_STORAGE_URL}#'"${{ secrets.AZURE_STORAGE_URL }}"'#g' src/main/resources/application.properties
 
     - name: Display application.properties
