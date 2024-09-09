@@ -72,8 +72,8 @@ jobs:
     - name: Deploy to Azure VM
       uses: appleboy/scp-action@v0.1.7
       with:
-          host: 54.81.18.205
-          username: ubuntu
+          host: "54.81.18.205"
+          username: "ubuntu"
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           port: 22
           source: "target/*.jar"
