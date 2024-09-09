@@ -72,20 +72,20 @@ jobs:
     - name: Deploy to Azure VM
       uses: appleboy/scp-action@v0.1.7
       with:
-          host: "54.81.18.205"
-          username: "ubuntu"
+          host: ${{ secrets.AWS_VM_HOST }}
+          username: ${{ secrets.AWS_VM_USERNAME }}
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-          port: 22
+          port: ${{ secrets.AWS_VM_PORT }}
           source: "target/*.jar"
           target: "/home/educai/java-app"
 
     - name: Move Java App to Docker Container
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: 54.81.18.205
-        username: ubuntu
+        host: ${{ secrets.AWS_VM_HOST }}
+        username: ${{ secrets.AWS_VM_USERNAME }}
         key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-        port: 22
+        port: ${{ secrets.AWS_VM_PORT }}
         script: |
           chmod +x /home/educai/script-backend.sh
           sh /home/educai/script-backend.sh
