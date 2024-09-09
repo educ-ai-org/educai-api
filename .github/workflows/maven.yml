@@ -87,5 +87,5 @@ jobs:
         key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
         port: ${{ secrets.AWS_VM_PORT }}
         script: |
-          chmod +x /home/educai/script-backend.sh
-          sh /home/educai/script-backend.sh
+          chmod +x /home/ubuntu/script-backend.sh
+          sh /home/ubuntu/script-backend.sh
