@@ -75,7 +75,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://localhost:80", "http://20.51.193.153", "http://educai.eastus.cloudapp.azure.com", "https://educai.eastus.cloudapp.azure.com"));
+        configuration.setAllowedOriginPatterns("*");
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token", "userId", "classworkId", "classroomId"));
         configuration.setExposedHeaders(List.of("x-auth-token"));
