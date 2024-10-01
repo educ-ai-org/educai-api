@@ -3,10 +3,15 @@ package api.educai.services;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.azure.storage.blob.BlobServiceClient;
+import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.azure.storage.blob.sas.BlobSasPermission;
+import com.azure.storage.blob.sas.BlobServiceSasSignatureValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -29,6 +34,12 @@ public class AzureBlobService {
 
     @Value("${azure.storage.blob-token}")
     private String blobToken;
+
+    @Value("${azure.storage.connection.string}")
+    private String connectionString;
+
+    @Value("${azure.storage.container.name}")
+    private String containerName;
 
     public String upload(MultipartFile file)
             throws IOException {
@@ -90,6 +101,25 @@ public class AzureBlobService {
         BlobClient blob = blobContainerClient.getBlobClient(blobName);
         blob.delete();
         return true;
+    }
+
+    public String generateSasToken(String fileName) {
+
+        BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
+                .connectionString(connectionString)
+                .buildClient();
+
+        BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(containerName);
+
+        BlobClient blobClient = containerClient.getBlobClient(fileName);
+
+        BlobSasPermission permission = new BlobSasPermission()
+                .setReadPermission(true);
+        OffsetDateTime expiryTime = OffsetDateTime.now().plusHours(1);
+        BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(expiryTime, permission);
+
+        return blobClient.generateSas(sasValues);
+
     }
 
 }
