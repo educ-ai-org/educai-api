@@ -32,9 +32,6 @@ public class AzureBlobService {
     @Value("${azure.storage.url}")
     private String storageUrl;
 
-    @Value("${azure.storage.blob-token}")
-    private String blobToken;
-
     @Value("${azure.storage.connection.string}")
     private String connectionString;
 
@@ -72,7 +69,7 @@ public class AzureBlobService {
 
     public String getBlobUrl(String fileName){
         BlobClient blob = blobContainerClient.getBlobClient(fileName);
-        return blob.getBlobUrl() + "?%s".formatted(blobToken);
+        return blob.getBlobUrl() + "?%s".formatted(generateSasToken(fileName));
     }
 
     public byte[] download(String fileName)
