@@ -130,22 +130,25 @@ public class UserController {
     }
 
     @Operation(summary = "Adiciona imagem de perfil do usuário")
-    @PostMapping("/{userId}/picture")
-    public ResponseEntity<Void> uploadProfilePicture(MultipartFile file, @PathVariable ObjectId userId) {
+    @PostMapping("/picture")
+    public ResponseEntity<Void> uploadProfilePicture(MultipartFile file, HttpServletRequest request) {
+        ObjectId userId = (ObjectId) request.getAttribute("userId");
         userService.uploadFile(file, userId);
         return status(200).build();
     }
 
     @Operation(summary = "Busca imagem de perfil do usuário")
-    @GetMapping(value = "/{userId}/picture", produces = MediaType.ALL_VALUE)
-    public ResponseEntity<byte[]> getProfilePicture(@PathVariable ObjectId userId) throws URISyntaxException {
+    @GetMapping(value = "/picture", produces = MediaType.ALL_VALUE)
+    public ResponseEntity<byte[]> getProfilePicture(HttpServletRequest request) throws URISyntaxException {
+        ObjectId userId = (ObjectId) request.getAttribute("userId");
         byte[] image = userService.getProfilePicture(userId);
         return status(200).body(image);
     }
 
     @Operation(summary = "Busca URL de imagem de perfil do usuário")
-    @GetMapping(value = "/{userId}/picture-url")
-    public ResponseEntity<String> getProfilePictureUrl(@PathVariable ObjectId userId) throws URISyntaxException {
+    @GetMapping(value = "/picture-url")
+    public ResponseEntity<String> getProfilePictureUrl(HttpServletRequest request) throws URISyntaxException {
+        ObjectId userId = (ObjectId) request.getAttribute("userId");
         return status(200).body(userService.getProfilePictureUrl(userId));
     }
 
