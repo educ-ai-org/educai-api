@@ -82,9 +82,10 @@ public class ClassroomController {
 
     @Operation(summary = "Retorna atividades de uma sala de aula com o status de resposta do usuário")
     @Secured("ROLE_STUDENT")
-    @GetMapping("/{id}/classworks/{userId}")
-    public ResponseEntity<List<ClassworkUserDTO>> getClassworksByClassroom(@PathVariable ObjectId id, @PathVariable ObjectId userId) {
-        List<ClassworkUserDTO> classworks = classroomService.getClassworksByUser(id, userId);
+    @GetMapping("/{classroomId}/student-classworks")
+    public ResponseEntity<List<ClassworkUserDTO>> getClassworksByClassroom(@PathVariable ObjectId classroomId, HttpServletRequest request) {
+        ObjectId userId = (ObjectId) request.getAttribute("userId");
+        List<ClassworkUserDTO> classworks = classroomService.getClassworksByUser(classroomId, userId);
         return classworks.isEmpty() ? status(204).build() : status(200).body(classworks);
     }
 
@@ -141,11 +142,11 @@ public class ClassroomController {
     }
 
     @Operation(summary = "Remove um aluno de uma sala de aula")
-    @DeleteMapping("/{id}/user/{userId}")
+    @DeleteMapping("/{classroomId}/user/{userId}")
     @Secured("ROLE_TEACHER")
-    public ResponseEntity<Void> removeUser(@PathVariable ObjectId id, @PathVariable ObjectId userId, HttpServletRequest request) {
+    public ResponseEntity<Void> removeUser(@PathVariable ObjectId classroomId, @PathVariable ObjectId userId, HttpServletRequest request) {
         ObjectId requestUserId = (ObjectId) request.getAttribute("userId");
-        classroomService.removeUser(id, userId, requestUserId);
+        classroomService.removeUser(classroomId, userId, requestUserId);
         return status(204).build();
     }
 

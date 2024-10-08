@@ -43,20 +43,12 @@ public class ClassworkController {
     @PostMapping("/answer")
     public ResponseEntity<Void> addAnswer(
             @RequestBody @Valid Answer answer,
-            @RequestHeader ObjectId userId,
-            @RequestHeader ObjectId classworkId
+            @RequestHeader ObjectId classworkId,
+            HttpServletRequest request
     ) {
+        ObjectId userId = (ObjectId) request.getAttribute("userId");
         classworkService.addAnswer(answer, userId, classworkId);
         return status(201).build();
-    }
-
-    @Operation(summary = "Retorna uma lista de usuários e o status da resposta para uma atividade")
-    @Secured("ROLE_TEACHER")
-    @GetMapping("/{id}/answers/status")
-    public ResponseEntity<List<UserAnswerStatusDTO>> getUserAnswerStatus(
-            @PathVariable ObjectId id) {
-        List<UserAnswerStatusDTO> userAnswerStatusList = classworkService.getUserAnswerStatus(id);
-        return status(200).body(userAnswerStatusList);
     }
 
     @Operation(summary = "Retorna uma atividade via id")
@@ -67,9 +59,19 @@ public class ClassworkController {
     }
 
     @Operation(summary = "Retorna resposta e detalhes de uma atividade de um aluno")
-    @GetMapping("/{id}/answer/{userId}")
-    public ResponseEntity<AnswerDetailsDTO> getAnswer(@PathVariable ObjectId id, @PathVariable ObjectId userId) {
+    @GetMapping("/{id}/answer")
+    public ResponseEntity<AnswerDetailsDTO> getAnswer(@PathVariable ObjectId id, HttpServletRequest request) {
+        ObjectId userId = (ObjectId) request.getAttribute("userId");
         return status(200).body(classworkService.getAnswer(id, userId));
+    }
+
+    @Operation(summary = "Retorna uma lista de usuários e o status da resposta para uma atividade")
+    @Secured("ROLE_TEACHER")
+    @GetMapping("/{id}/answers/status")
+    public ResponseEntity<List<UserAnswerStatusDTO>> getUserAnswerStatus(
+            @PathVariable ObjectId id) {
+        List<UserAnswerStatusDTO> userAnswerStatusList = classworkService.getUserAnswerStatus(id);
+        return status(200).body(userAnswerStatusList);
     }
 
     @Operation(summary = "Deleta uma atividade")
