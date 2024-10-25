@@ -3,6 +3,7 @@ name: Java CI with Maven and Auto Tagging
 on:
   push:
     branches: [ deploy-aws ]
+  workflow_dispatch:
 
 jobs:
   CI:
@@ -61,8 +62,7 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
-    environment: 
-      name: "approvers"
+    if: ${{ github.event_name == 'workflow_dispatch' }}
 
     steps:
     - name: Download Artifacts
