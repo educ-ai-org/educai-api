@@ -87,7 +87,6 @@ jobs:
         key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
         port: ${{ secrets.AWS_VM_PORT }}
         script: |
-          chmod +x /home/ubuntu/deploy_backend.sh
           sh /home/ubuntu/deploy_backend.sh
   # Deploy-Azure:
   #   needs: [CI]
