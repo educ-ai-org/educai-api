@@ -1,10 +1,9 @@
 package api.educai.dto.user;
 
 import api.educai.entities.User;
+import api.educai.services.AzureBlobService;
 import lombok.Data;
 import org.bson.types.ObjectId;
-
-import static api.educai.services.UserService.getFileName;
 
 @Data
 public class UserPictureDTO {
@@ -14,7 +13,7 @@ public class UserPictureDTO {
 
     public UserPictureDTO(User user) {
         this.id = user.getId();
-        this.profilePicture = getFileName(user.getProfilePicture());
+        this.profilePicture = user.getProfilePicture() + "?" + AzureBlobService.getGlobalToken();
     }
 
 }
