@@ -204,17 +204,19 @@ public class UserService {
     public byte[] getProfilePicture(ObjectId userId) throws URISyntaxException {
         User user = getUserById(userId);
         String path = user.getProfilePicture();
-        String[] parts = path.split("/");
-        String fileName = parts[parts.length - 1];
+        String fileName = getFileName(path);
         return azureBlobService.download(fileName);
     }
 
     public String getProfilePictureUrl(ObjectId userId) throws URISyntaxException {
         User user = getUserById(userId);
         String path = user.getProfilePicture();
+        return azureBlobService.getBlobUrl(getFileName(path));
+    }
+
+    public static String getFileName(String path) {
         String[] parts = path.split("/");
-        String fileName = parts[parts.length - 1];
-        return azureBlobService.getBlobUrl(fileName);
+        return parts[parts.length - 1];
     }
 
 }

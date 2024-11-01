@@ -10,11 +10,11 @@ import api.educai.dto.post.PostDTO;
 import api.educai.dto.user.NewStudentEmailDTO;
 import api.educai.dto.user.ReportDTO;
 import api.educai.dto.user.UserDTO;
+import api.educai.dto.user.UserPictureDTO;
 import api.educai.entities.Answer;
 import api.educai.entities.Classroom;
 import api.educai.entities.Post;
 import api.educai.entities.User;
-import api.educai.repositories.AnswerRepository;
 import api.educai.repositories.ClassroomRepository;
 import api.educai.repositories.UserRespository;
 import api.educai.utils.CSVGenerator;
@@ -238,6 +238,14 @@ public class ClassroomService {
 
         userRespository.save(user);
         classroomRepository.save(classroom);
+    }
+
+    public List<UserPictureDTO> getParticipantsPictures(ObjectId classroomId) {
+        Classroom classroom = getClassroomById(classroomId);
+        return classroom.getParticipants().stream()
+                .filter(user -> user.getProfilePicture() != null)
+                .map(UserPictureDTO::new)
+                .toList();
     }
 
 }

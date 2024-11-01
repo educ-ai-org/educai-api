@@ -8,6 +8,7 @@ import api.educai.dto.classwork.ClassworkUserDTO;
 import api.educai.dto.post.PostDTO;
 import api.educai.dto.user.ReportDTO;
 import api.educai.dto.user.UserDTO;
+import api.educai.dto.user.UserPictureDTO;
 import api.educai.entities.Classroom;
 import api.educai.entities.Post;
 import api.educai.services.ClassroomService;
@@ -116,6 +117,12 @@ public class ClassroomController {
     public ResponseEntity<List<UserScoreDTO>> getLeaderBoard(@PathVariable ObjectId classroomId) {
         List<UserScoreDTO> leaderBoard = classroomService.getLeaderBoard(classroomId);
         return leaderBoard.isEmpty() ? status(204).build() : status(200).body(leaderBoard);
+    }
+
+    @GetMapping("/{classroomId}/profile-pictures")
+    public ResponseEntity<List<UserPictureDTO>> getParticipantsPictures(@PathVariable ObjectId classroomId) {
+        List<UserPictureDTO> userPictures = classroomService.getParticipantsPictures(classroomId);
+        return userPictures.isEmpty() ? status(204).build() : status(200).body(userPictures);
     }
 
     @Operation(summary = "Deleta uma sala de aula")
