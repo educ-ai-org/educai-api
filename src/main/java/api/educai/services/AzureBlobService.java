@@ -12,6 +12,7 @@ import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.sas.BlobSasPermission;
 import com.azure.storage.blob.sas.BlobServiceSasSignatureValues;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,9 +40,16 @@ public class AzureBlobService {
     @Value("${azure.storage.container.name}")
     private String containerName;
 
-    @Getter
     @Value("${azure.storage.blob-token}")
+    private String token;
+
+    @Getter
     private static String globalToken;
+
+    @PostConstruct
+    public void init() {
+        globalToken = token;
+    }
 
     public String upload(MultipartFile file)
             throws IOException {
