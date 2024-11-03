@@ -172,7 +172,9 @@ public class ClassroomService {
     public List<Post> getPostsByClassroom(ObjectId classroomId) {
         Classroom classroom = classroomRepository.findById(classroomId);
         List<Post> posts = classroom.getPosts();
-        posts.forEach(p -> p.setFile(azureBlobService.getBlobUrl(p.getFile())));
+        posts.stream()
+                .filter(p -> p.getFile() != null)
+                .forEach(p -> p.setFile(azureBlobService.getBlobUrl(p.getFile())));
         return posts;
     }
 

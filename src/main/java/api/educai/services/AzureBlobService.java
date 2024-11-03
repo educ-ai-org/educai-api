@@ -80,10 +80,15 @@ public class AzureBlobService {
         return storageUrl + uuid + type;
     }
 
-    public String getBlobUrl(String fileName){
-        BlobClient blob = blobContainerClient.getBlobClient(fileName);
-        return blob.getBlobUrl() + "?%s".formatted(generateSasToken(fileName));
+    public String getBlobUrl(String fileUrl){
+        return fileUrl + "?%s".formatted(generateSasToken(getFileName(fileUrl)));
     }
+
+    public static String getFileName(String path) {
+        String[] parts = path.split("/");
+        return parts[parts.length - 1];
+    }
+
 
     public byte[] download(String fileName)
             throws URISyntaxException {

@@ -28,6 +28,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import static api.educai.services.AzureBlobService.getFileName;
+
 @Service
 public class UserService {
     @Autowired
@@ -211,12 +213,7 @@ public class UserService {
     public String getProfilePictureUrl(ObjectId userId) throws URISyntaxException {
         User user = getUserById(userId);
         String path = user.getProfilePicture();
-        return azureBlobService.getBlobUrl(getFileName(path));
-    }
-
-    public static String getFileName(String path) {
-        String[] parts = path.split("/");
-        return parts[parts.length - 1];
+        return azureBlobService.getBlobUrl(path);
     }
 
 }
