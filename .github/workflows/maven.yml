@@ -40,15 +40,6 @@ jobs:
     - name: Run tests
       run: mvn -B test
 
-    # - name: Bump version and push tag
-    #   id: tag_version
-    #   uses: mathieudutour/github-tag-action@v5.6
-    #   with:
-    #     github_token: ${{ secrets.GITHUB_TOKEN }}
-    #     default_bump: patch
-    #     initial_version: '1.0.0' # Sets the initial version if no tags exist
-    #     release_branches: main  # Ensures tags are only pushed on the main branch
-
     - name: Upload Artifact
       id: upload-artifact
       uses: actions/upload-artifact@v4
@@ -56,39 +47,27 @@ jobs:
         name: application
         path: target/*.jar
 
-  Deploy-Azure:
-    needs: [CI]
-    permissions:
-      contents: write
+  Docker:
     runs-on: ubuntu-latest
+    needs: [CI]
+    steps: 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    steps:
-    - name: Download Artifacts
-      uses: actions/download-artifact@v4
-      with:
-          name: application
-          path: target/
-          
-    - name: Deploy to Azure VM
-      uses: appleboy/scp-action@v0.1.7
-      with:
-          host: ${{ secrets.AZURE_VM_HOST }}
-          username: ${{ secrets.AZURE_VM_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.AZURE_VM_PORT }}
-          source: "target/*.jar"
-          target: "/home/educai/java-app"
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Move Java App to Docker Container
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.AZURE_VM_HOST }}
-        username: ${{ secrets.AZURE_VM_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.AZURE_VM_PORT }}
-        script: |
-          chmod +x /home/educai/script-backend.sh
-          sh /home/educai/script-backend.sh
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: diegosousa241104/educai-api:latest
 
   Deploy-AWS:
     needs: [CI]
