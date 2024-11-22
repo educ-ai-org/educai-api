@@ -2,7 +2,7 @@ name: Java CI with Maven and Auto Tagging
 
 on:
   push:
-    branches: [ main ]
+    branches: [ feat/atividade-ci-cd ]
 
 jobs:
   CI:
