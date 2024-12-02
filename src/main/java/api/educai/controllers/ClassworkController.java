@@ -65,6 +65,13 @@ public class ClassworkController {
         return status(200).body(classworkService.getAnswer(id, userId));
     }
 
+    @Operation(summary = "Retorna resposta e detalhes de uma atividade de um aluno")
+    @Secured("ROLE_TEACHER")
+    @GetMapping("/{classworkId}/answer/{studentId}")
+    public ResponseEntity<AnswerDetailsDTO> getStudentAnswer(@PathVariable ObjectId classworkId, @PathVariable ObjectId studentId) {
+        return status(200).body(classworkService.getAnswer(classworkId, studentId));
+    }
+
     @Operation(summary = "Retorna uma lista de usuários e o status da resposta para uma atividade")
     @Secured("ROLE_TEACHER")
     @GetMapping("/{id}/answers/status")
